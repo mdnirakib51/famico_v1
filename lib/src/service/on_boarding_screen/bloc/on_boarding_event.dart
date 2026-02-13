@@ -14,12 +14,15 @@ class PageChanged extends OnBoardingEvent {
   List<Object?> get props => [pageIndex];
 }
 
+class LanguageChanged extends OnBoardingEvent{
+  final String language;
+
+  LanguageChanged(this.language);
+
+  @override
+  List<Object?> get props => [language];
+}
+
 class GetStartedPressed extends OnBoardingEvent {}
 
 class OnBoardingCompleted extends OnBoardingEvent {}
-
-class StartAutoSlide extends OnBoardingEvent {}
-
-class StopAutoSlide extends OnBoardingEvent {}
-
-class AutoSlideNext extends OnBoardingEvent {}

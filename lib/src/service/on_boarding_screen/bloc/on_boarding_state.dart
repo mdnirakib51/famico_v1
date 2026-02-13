@@ -6,29 +6,29 @@ class OnBoardingState extends Equatable {
   final OnBoardingStatus status;
   final int currentPageIndex;
   final bool isLastPage;
-  final bool shouldAnimateToPage;
+  final String selectedLanguage;
 
   const OnBoardingState({
     this.status = OnBoardingStatus.initial,
     this.currentPageIndex = 0,
     this.isLastPage = false,
-    this.shouldAnimateToPage = false,
+    this.selectedLanguage = 'EN',
   });
 
   OnBoardingState copyWith({
     OnBoardingStatus? status,
     int? currentPageIndex,
     bool? isLastPage,
-    bool? shouldAnimateToPage,
+    String? selectLanguage,
   }) {
     return OnBoardingState(
       status: status ?? this.status,
       currentPageIndex: currentPageIndex ?? this.currentPageIndex,
       isLastPage: isLastPage ?? this.isLastPage,
-      shouldAnimateToPage: shouldAnimateToPage ?? this.shouldAnimateToPage,
+      selectedLanguage: selectLanguage ?? this.selectedLanguage,
     );
   }
 
   @override
-  List<Object?> get props => [status, currentPageIndex, isLastPage, shouldAnimateToPage];
+  List<Object?> get props => [status, currentPageIndex, isLastPage, selectedLanguage];
 }

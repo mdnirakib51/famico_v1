@@ -78,7 +78,7 @@ class ColorRes {
   // static const Color appColor = Color(0xFF0077B6);
   // static const Color appColor = Color(0xFF0096C7);
   static const Color appButtonColor = Color(0xFF0096C7);
-  static const Color appColor = Color(0xFF0B1215);
+  static const Color appColor = Color(0xFFEF3425);
   static const Color appBackColor = Color(0xFFFFFFFF);
   static const Color appRedColor = Color(0xFFD20820);
   static const Color textColor = Color(0xFF004080);

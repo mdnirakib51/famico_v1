@@ -13,14 +13,9 @@ class OnBoardingBloc extends Bloc<OnBoardingEvent, OnBoardingState> {
 
   OnBoardingBloc() : super(const OnBoardingState()) {
     on<PageChanged>(_onPageChanged);
+    on<LanguageChanged>(_onLanguageChanged);
     on<GetStartedPressed>(_onGetStartedPressed);
     on<OnBoardingCompleted>(_onOnBoardingCompleted);
-    on<StartAutoSlide>(_onStartAutoSlide);
-    on<StopAutoSlide>(_onStopAutoSlide);
-    on<AutoSlideNext>(_onAutoSlideNext);
-
-    // Start auto-slide when bloc is created
-    add(StartAutoSlide());
   }
 
   Future<void> _onPageChanged(PageChanged event, Emitter<OnBoardingState> emit) async {
@@ -30,28 +25,12 @@ class OnBoardingBloc extends Bloc<OnBoardingEvent, OnBoardingState> {
       currentPageIndex: event.pageIndex,
       isLastPage: isLast,
       status: OnBoardingStatus.viewing,
-      shouldAnimateToPage: false,
     ));
   }
 
-  Future<void> _onStartAutoSlide(StartAutoSlide event, Emitter<OnBoardingState> emit) async {
-    _autoSlideTimer?.cancel();
-    _autoSlideTimer = Timer.periodic(Duration(seconds: 3), (timer) {
-      add(AutoSlideNext());
-    });
-  }
-
-  Future<void> _onStopAutoSlide(StopAutoSlide event, Emitter<OnBoardingState> emit) async {
-    _autoSlideTimer?.cancel();
-  }
-
-  Future<void> _onAutoSlideNext(AutoSlideNext event, Emitter<OnBoardingState> emit) async {
-    int nextPage = (state.currentPageIndex + 1) % totalPages;
+  Future<void> _onLanguageChanged(LanguageChanged event, Emitter<OnBoardingState> emit) async{
     emit(state.copyWith(
-      currentPageIndex: nextPage,
-      isLastPage: nextPage == totalPages - 1,
-      status: OnBoardingStatus.viewing,
-      shouldAnimateToPage: true, // Animate for auto-slide
+      selectLanguage: event.language
     ));
   }
 
@@ -76,9 +55,4 @@ class OnBoardingBloc extends Bloc<OnBoardingEvent, OnBoardingState> {
     emit(state.copyWith(status: OnBoardingStatus.navigating));
   }
 
-  @override
-  Future<void> close() {
-    _autoSlideTimer?.cancel();
-    return super.close();
-  }
 }

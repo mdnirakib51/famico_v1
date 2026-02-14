@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'colors_resources.dart';
 
@@ -313,76 +314,77 @@ InputDecoration oceanInputDecoration = InputDecoration(
 InputDecoration glassInputDecoration = InputDecoration(
   isDense: true,
   filled: true,
-  fillColor: Colors.white.withOpacity(0.15),
+  fillColor: Colors.grey.withOpacity(0.05),
 
-  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
 
-  hintStyle: TextStyle(
-    color: Colors.white.withOpacity(0.7),
+  hintStyle: GoogleFonts.roboto(
+    color: Colors.grey.shade500,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   ),
 
-  labelStyle: const TextStyle(
-    color: Colors.white,
+  labelStyle: GoogleFonts.roboto(
+    color: Colors.grey.shade700,
     fontSize: 14,
     fontWeight: FontWeight.w500,
   ),
 
-  floatingLabelStyle: const TextStyle(
-    color: Colors.white,
-    fontSize: 16,
+  floatingLabelStyle: GoogleFonts.roboto(
+    color: ColorRes.appColor,
+    fontSize: 15,
     fontWeight: FontWeight.w600,
   ),
 
   enabledBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
+    borderRadius: BorderRadius.circular(14),
     borderSide: BorderSide(
-      color: Colors.white.withOpacity(0.3),
-      width: 1.5,
+      color: Colors.grey.withOpacity(0.25),
+      width: 1.2,
     ),
   ),
 
   focusedBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
+    borderRadius: BorderRadius.circular(14),
     borderSide: const BorderSide(
-      color: Colors.white,
+      color: ColorRes.black,
       width: 2,
     ),
   ),
 
   errorBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
+    borderRadius: BorderRadius.circular(14),
     borderSide: const BorderSide(
-      color: Color(0xFFFFD93D),
-      width: 1.5,
+      color: Colors.redAccent,
+      width: 1.2,
     ),
   ),
 
   focusedErrorBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
+    borderRadius: BorderRadius.circular(14),
     borderSide: const BorderSide(
-      color: Color(0xFFFFD93D),
+      color: Colors.redAccent,
       width: 2,
     ),
   ),
 
   disabledBorder: OutlineInputBorder(
-    borderRadius: BorderRadius.circular(12),
+    borderRadius: BorderRadius.circular(14),
     borderSide: BorderSide(
-      color: Colors.white.withOpacity(0.2),
+      color: Colors.grey.withOpacity(0.15),
       width: 1,
     ),
   ),
 
-  errorStyle: const TextStyle(
-    color: Color(0xFFFFD93D),
-    fontSize: 12,
+  errorStyle: GoogleFonts.roboto(
+    color: Colors.redAccent,
+    fontSize: 11,
     fontWeight: FontWeight.w500,
+    height: 1.2,
   ),
 
-  prefixIconColor: Colors.white,
-  suffixIconColor: Colors.white,
+  prefixIconColor: Colors.grey.shade600,
+  suffixIconColor: Colors.grey.shade600,
 );
 
 // Bubble Style (Playful Ocean Theme)

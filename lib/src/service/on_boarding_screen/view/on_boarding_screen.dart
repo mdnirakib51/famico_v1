@@ -340,9 +340,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> with TickerProvider
                               curve: Curves.easeInOut,
                             );
                           } else {
-                            context.read<OnBoardingBloc>().add(
-                                GetStartedPressed()
-                            );
+                            context.read<OnBoardingBloc>().add(GetStartedPressed());
                           }
                         },
                       ),

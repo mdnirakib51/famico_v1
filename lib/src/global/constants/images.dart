@@ -15,8 +15,9 @@ class Images {
   static const String textUre = 'assets/app_src/texture.jpg';
 
   //===============/@ Social
-  static const String facebookIc = 'assets/social_ic/facebook.png';
-  static const String linkedInIc = 'assets/social_ic/linkedin.png';
+  static const String facebookIc = 'assets/social_ic/facebook_ic.png';
+  static const String linkedInIc = 'assets/social_ic/google_ic.png';
+  static const String googleIc = 'assets/social_ic/google_ic.png';
 
   //==/@ App Src Icon
 

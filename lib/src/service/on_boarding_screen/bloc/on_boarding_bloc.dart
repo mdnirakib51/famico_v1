@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
-import '../../../domain/local/preferences/local_storage.dart';
-import '../../../domain/local/preferences/local_storage_keys.dart';
+import '../../../core_functionality/constants/storage_keys.dart';
+import '../../../core_functionality/storage/local_storage.dart';
 import '../../../initializer.dart';
 import 'on_boarding_event.dart';
 import 'on_boarding_state.dart';

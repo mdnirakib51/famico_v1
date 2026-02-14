@@ -39,6 +39,8 @@ class GlobalTextFormField extends StatefulWidget {
   final Function? onChanged;
   final FloatingLabelBehavior? floatingLabelBehavior;
   final String? Function(String?)? validator;
+  final TextInputAction? textInputAction;
+  final Function(String)? onFieldSubmitted;
   const GlobalTextFormField({
     super.key,
     this.enabled,
@@ -73,6 +75,8 @@ class GlobalTextFormField extends StatefulWidget {
     this.focusNode,
     this.autocurrent = false,
     this.isDense = false,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -98,7 +102,7 @@ class _GlobalTextFormFieldState extends State<GlobalTextFormField> {
             ? const SizedBox.shrink()
             : Text(widget.titleText ?? "",
           style: widget.titleStyle
-            ?? GoogleFonts.roboto(
+              ?? GoogleFonts.roboto(
                   color: ColorRes.black,
                   fontSize: 11,
                   fontWeight: FontWeight.w700
@@ -150,6 +154,8 @@ class _GlobalTextFormFieldState extends State<GlobalTextFormField> {
           obscuringCharacter: widget.obscuringCharacter ?? "*",
           keyboardType: widget.keyboardType,
           maxLines: widget.maxLines ?? 1,
+          textInputAction: widget.textInputAction,
+          onFieldSubmitted: widget.onFieldSubmitted,
           onChanged: (text)=> widget.onChanged != null ? widget.onChanged!(text) : widget.onChanged,
           decoration: widget.decoration?.copyWith(
             isDense: widget.isDense,

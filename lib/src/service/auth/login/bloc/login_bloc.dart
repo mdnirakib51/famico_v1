@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
-import '../../bloc/auth_service.dart';
+import '../../data/auth_service.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
@@ -56,14 +56,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<void> _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
     try {
       emit(state.copyWith(status: LoginStatus.loading));
-
-      if (state.rememberMe) {
-        AuthService.saveCredentials(
-          email: event.email,
-          password: event.password,
-          rememberMe: state.rememberMe,
-        );
-      }
+      _saveCredentialsIfRemembered();
 
       await Future.delayed(Duration(seconds: 1));
 

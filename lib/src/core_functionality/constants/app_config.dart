@@ -1,11 +1,10 @@
 
 import 'dart:developer';
-
 import '../../initializer.dart';
-import '../local/preferences/local_storage.dart';
-import '../local/preferences/local_storage_keys.dart';
+import '../storage/local_storage.dart';
+import 'storage_keys.dart';
 
-enum UrlLink {
+enum ApiBaseUrl {
   isLive,
   isDev,
   isLocalServer,
@@ -22,15 +21,15 @@ extension AppUrlExtention on AppConfig {
   static String _baseUrl = "";
 
   // Method to set predefined URLs
-  static void setUrl(UrlLink urlLink) {
+  static void setUrl(ApiBaseUrl urlLink) {
     switch (urlLink) {
-      case UrlLink.isLive:
+      case ApiBaseUrl.isLive:
         _baseUrl = "";
         break;
-      case UrlLink.isDev:
+      case ApiBaseUrl.isDev:
         _baseUrl = ""; // Default dev URL
         break;
-      case UrlLink.isLocalServer:
+      case ApiBaseUrl.isLocalServer:
         _baseUrl = "";
         break;
     }
@@ -48,7 +47,7 @@ extension AppUrlExtention on AppConfig {
     _baseUrl = customUrl;
   }
 
-  static void initializeUrl({UrlLink defaultUrlLink = UrlLink.isDev}) {
+  static void initializeUrl({ApiBaseUrl defaultUrlLink = ApiBaseUrl.isDev}) {
     try {
       final String? savedBaseUrl = locator<LocalStorage>().getString(key: StorageKeys.baseUrl);
 
@@ -76,9 +75,10 @@ extension AppUrlExtention on AppConfig {
         return "";
     /// ==========/@ Auth Api Url @/==========
       case AppConfig.logInUrl:
-        return '/api/login';
+        return '/api/user/login';
       case AppConfig.logOutUrl:
         return '/api/logout';
+
     }
   }
 }

@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'service/auth/login/bloc/login_bloc.dart';
-import 'service/on_boarding_screen/bloc/on_boarding_bloc.dart';
-import 'service/splash_screen/bloc/splash_bloc.dart';
-import 'service/splash_screen/view/splash_screen.dart';
+import 'features/auth/login/bloc/login_bloc.dart';
+import 'features/on_boarding_screen/bloc/on_boarding_bloc.dart';
+import 'features/splash_screen/bloc/splash_bloc.dart';
+import 'features/splash_screen/view/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

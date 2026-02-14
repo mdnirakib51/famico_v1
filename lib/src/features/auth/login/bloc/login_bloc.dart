@@ -1,14 +1,18 @@
 import 'dart:developer';
 import 'package:bloc/bloc.dart';
-import '../../data/auth_service.dart';
+import '../../data/models/auth_model.dart';
+import '../../data/repositories/auth_repo.dart';
+import '../../data/repositories/auth_service.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final AuthRepository _authRepository = AuthRepository();
+
   LoginBloc() : super(const LoginState()) {
     on<LoadSavedCredentials>(_onLoadSavedCredentials);
     on<LoginFieldChanged>(_onFieldChanged);
-    on<LoginSubmitted>(_onLoginSubmitted);
+    on<LoginSubmitted>(_reqLogIn);
 
     add(LoadSavedCredentials());
   }
@@ -53,15 +57,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  Future<void> _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
+  Future<void> _reqLogIn(LoginSubmitted event, Emitter<LoginState> emit) async {
     try {
       emit(state.copyWith(status: LoginStatus.loading));
       _saveCredentialsIfRemembered();
 
-      await Future.delayed(Duration(seconds: 1));
-
       if (event.email.isNotEmpty && event.password.isNotEmpty) {
-        log('Login successful for: ${event.email}');
+        final AuthModel response = await _authRepository.reqLogIn(
+          email: event.email,
+          password: event.password,
+        );
+
+        if (response.token != null) {
+          _authRepository.requestHandler.updateHeader(
+            token: response.token ?? "",
+          );
+        }
+
         emit(state.copyWith(status: LoginStatus.success));
       } else {
         emit(state.copyWith(

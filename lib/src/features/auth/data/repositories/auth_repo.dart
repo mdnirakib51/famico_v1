@@ -1,7 +1,7 @@
 
-import '../../../core_functionality/constants/api_helper.dart';
-import '../../../core_functionality/constants/app_config.dart';
-import 'auth_model.dart';
+import '../../../../core_functionality/constants/api_helper.dart';
+import '../../../../core_functionality/constants/app_config.dart';
+import '../models/auth_model.dart';
 
 class AuthRepository extends ApiHelper {
 

@@ -17,7 +17,7 @@ enum AppConfig {
   logOutUrl,
 }
 
-extension AppUrlExtention on AppConfig {
+extension AppUrlExtension on AppConfig {
   static String _baseUrl = "";
 
   // Method to set predefined URLs

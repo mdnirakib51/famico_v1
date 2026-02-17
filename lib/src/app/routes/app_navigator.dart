@@ -70,20 +70,20 @@ class AppNavigator {
     return canGoBack(context);
   }
 
-  // ==================== Shortcuts ====================
-
-  /// Go to Login and clear stack
-  static void goToLogin(BuildContext context) {
-    navigateAndRemoveAllNamed(context, AppRouteKeys.login);
-  }
-
-  /// Go to Home and clear stack
-  static void goToHome(BuildContext context) {
-    navigateAndRemoveAllNamed(context, AppRouteKeys.home);
-  }
-
-  /// Go to OnBoarding and clear stack
-  static void goToOnBoarding(BuildContext context) {
-    navigateAndRemoveAllNamed(context, AppRouteKeys.onBoarding);
-  }
+  // // ==================== Shortcuts ====================
+  //
+  // /// Go to Login and clear stack
+  // static void goToLogin(BuildContext context) {
+  //   navigateAndRemoveAllNamed(context, AppRouteKeys.login);
+  // }
+  //
+  // /// Go to Home and clear stack
+  // static void goToHome(BuildContext context) {
+  //   navigateAndRemoveAllNamed(context, AppRouteKeys.home);
+  // }
+  //
+  // /// Go to OnBoarding and clear stack
+  // static void goToOnBoarding(BuildContext context) {
+  //   navigateAndRemoveAllNamed(context, AppRouteKeys.onBoarding);
+  // }
 }

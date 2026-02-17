@@ -69,9 +69,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
 
         if (response.token != null) {
-          _authRepository.requestHandler.updateHeader(
-            token: response.token ?? "",
-          );
+          _authRepository.requestHandler.updateHeader(token: response.token ?? "");
         }
 
         emit(state.copyWith(status: LoginStatus.success));

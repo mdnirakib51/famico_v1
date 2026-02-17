@@ -71,11 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Show error message on failure
           if (state.status == LoginStatus.failure && state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: Colors.red,
-              ),
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!), backgroundColor: Colors.red),
             );
           }
         },
@@ -130,12 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (val) {
-                                  context.read<LoginBloc>().add(
-                                    LoginFieldChanged(
-                                      field: LoginField.email,
-                                      value: val,
-                                    ),
-                                  );
+                                  context.read<LoginBloc>().add(LoginFieldChanged(field: LoginField.email, value: val));
                                 },
                                 onFieldSubmitted: (_) {
                                   FocusScope.of(context).requestFocus(_passwordFocus);
@@ -161,12 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 isPasswordField: true,
                                 textInputAction: TextInputAction.done,
                                 onChanged: (val) {
-                                  context.read<LoginBloc>().add(
-                                    LoginFieldChanged(
-                                      field: LoginField.password,
-                                      value: val,
-                                    ),
-                                  );
+                                  context.read<LoginBloc>().add(LoginFieldChanged(field: LoginField.password, value: val));
                                 },
                                 onFieldSubmitted: (_) {
                                   FocusScope.of(context).unfocus();

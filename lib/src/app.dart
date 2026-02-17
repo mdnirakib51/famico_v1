@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'app/routes/app_route.dart';
 import 'features/auth/login/bloc/login_bloc.dart';
 import 'features/on_boarding_screen/bloc/on_boarding_bloc.dart';
 import 'features/splash_screen/bloc/splash_bloc.dart';
-import 'features/splash_screen/view/splash_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -19,7 +18,9 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const SplashScreen(),
+        initialRoute: AppRouteKeys.splash,
+        onGenerateRoute: AppRouteGenerator.generateRoute,
+        // ────────────────────────────────────
       ),
     );
   }

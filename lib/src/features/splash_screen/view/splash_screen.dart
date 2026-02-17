@@ -1,14 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../app/routes/app_navigator.dart';
+import '../../../app/routes/app_route.dart';
 import '../../../global/constants/colors_resources.dart';
 import '../../../global/constants/images.dart';
 import '../../../global/global_widget/global_image_loader.dart';
-import '../../../global/utils/navigation.dart';
 import '../../../global/widget/container_space_background_widget.dart';
-import '../../auth/login/view/login_screen.dart';
-import '../../on_boarding_screen/view/on_boarding_screen.dart';
 import '../bloc/splash_bloc.dart';
 import '../bloc/splash_event.dart';
 import '../bloc/splash_state.dart';
@@ -40,30 +38,29 @@ class _SplashScreenState extends State<SplashScreen> {
     return BlocListener<SplashBloc, SplashState>(
       listener: (context, state) {
         if (state.status == SplashStatus.navigating) {
-          // Check if onboarding is completed
           if (!state.onBoardingCompleted) {
-            navigateAndRemoveAll(context, OnBoardingScreen());
+            // First time user → OnBoarding
+            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.onBoarding);
           } else if (state.token == null) {
-            navigateAndRemoveAll(context, LoginScreen());
+            // Not logged in → Login
+            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
           } else {
-            navigateAndRemoveAll(context, Scaffold(body: Center(child: Text("Home Screen"))));
+            // Logged in → Home
+            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.home);
           }
         }
       },
       child: const Scaffold(
-          backgroundColor: ColorRes.appBackColor,
-          body: ContainerSpaceBackWidget(
-            child: SizedBox(
-              child: Center(
-                child: GlobalImageLoader(
-                  imagePath: Images.appLogoIc,
-                  height: 150,
-                  //width: 220,
-                ),
-              ),
+        backgroundColor: ColorRes.appBackColor,
+        body: ContainerSpaceBackWidget(
+          child: Center(
+            child: GlobalImageLoader(
+              imagePath: Images.appLogoIc,
+              height: 150,
             ),
-          )
-      )
+          ),
+        ),
+      ),
     );
   }
 }

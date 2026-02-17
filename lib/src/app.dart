@@ -5,7 +5,7 @@ import 'features/auth/login/bloc/login_bloc.dart';
 import 'features/on_boarding_screen/bloc/on_boarding_bloc.dart';
 import 'features/splash_screen/bloc/splash_bloc.dart';
 import 'features/splash_screen/view/splash_screen.dart';
-// Check
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

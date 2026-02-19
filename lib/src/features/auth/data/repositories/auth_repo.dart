@@ -22,7 +22,7 @@ class AuthRepository extends ApiHelper {
     params['passwordHash'] = password;
 
     final response = await requestHandler.postWrp(AppConfig.logInUrl.url, params, isFormData: true);
-    if(response.code == 200 || response.code == 201){
+    if(response.status == '200' || response.status == '201'){
       return AuthModel.fromJson(response.data ?? {});
     }
     throw Exception('Login failed with code ${response.code}: ${response.message}');

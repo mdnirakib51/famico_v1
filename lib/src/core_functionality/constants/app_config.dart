@@ -27,7 +27,7 @@ extension AppUrlExtension on AppConfig {
         _baseUrl = "";
         break;
       case ApiBaseUrl.isDev:
-        _baseUrl = ""; // Default dev URL
+        _baseUrl = "http://api.famico.info:8080"; // Default dev URL
         break;
       case ApiBaseUrl.isLocalServer:
         _baseUrl = "";

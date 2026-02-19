@@ -22,7 +22,6 @@ class RequestHandler {
     _initialize();
   }
 
-  /// Factory constructor for easy creation
   static Future<RequestHandler> create() async {
     final dio = Dio(BaseOptions(
       baseUrl: AppConfig.base.url,
@@ -35,17 +34,14 @@ class RequestHandler {
     ));
 
     final storage = await LocalStorageService.getInstance();
-
     return RequestHandler(dio: dio, storage: storage);
   }
 
   Dio get dio => _dio;
   String get mainUrl => AppConfig.base.url;
 
-  /// Initialize headers with stored token
   void _initialize() {
     final currentToken = _storage.accessToken;
-
     if (currentToken != null) {
       log("==/@ Access Token Found: ${currentToken.substring(0, 20)}...");
       _updateDioHeaders(token: currentToken);
@@ -54,20 +50,19 @@ class RequestHandler {
     }
   }
 
-  /// Update Dio headers
   void _updateDioHeaders({required String token}) {
     _dio.options.headers['Authorization'] = 'Bearer $token';
     _dio.options.headers['Connection'] = 'keep-alive';
   }
 
-  /// Update token in both storage and headers
   Future<void> updateHeader({required String token}) async {
     await _storage.saveUserToken(token);
     _updateDioHeaders(token: token);
     log("#UpdatedHeader: TOKEN => ${token.substring(0, 20)}...");
   }
 
-  /// POST Request
+  // ==================== POST ====================
+
   Future<ResponseWrapper> postWrp(
       String url,
       dynamic params, {
@@ -100,13 +95,9 @@ class RequestHandler {
       );
 
       final Map<String, dynamic> responseData = _parseResponseData(response.data);
-      ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
+      final ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
 
-      ApiChecker.checkApi(
-        responseData['code'] ?? response.statusCode,
-        responseData['message'] ?? 'Success',
-      );
-
+      ApiChecker.checkApi(resWrp.code ?? response.statusCode ?? 0, resWrp.message ?? '');
       return resWrp;
     } on DioException catch (error, stackTrace) {
       final responseData = _extractErrorData(error);
@@ -114,8 +105,9 @@ class RequestHandler {
       throw RequestException(
         method: "POST",
         url: baseUrl ?? mainUrl + url,
-        statusCode: responseData['code'],
+        statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
+        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
         data: params,
         error: error,
         trace: stackTrace,
@@ -134,7 +126,8 @@ class RequestHandler {
     }
   }
 
-  /// GET Request
+  // ==================== GET ====================
+
   Future<ResponseWrapper> getWrp(
       String url, {
         dynamic params,
@@ -163,7 +156,7 @@ class RequestHandler {
       );
 
       final Map<String, dynamic> responseData = _parseResponseData(response.data);
-      ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
+      final ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
 
       return resWrp;
     } on DioException catch (error, stackTrace) {
@@ -172,8 +165,9 @@ class RequestHandler {
       throw RequestException(
         method: "GET",
         url: baseUrl ?? mainUrl + url,
-        statusCode: responseData['code'],
+        statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
+        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
         data: params,
         error: error,
         trace: stackTrace,
@@ -192,7 +186,8 @@ class RequestHandler {
     }
   }
 
-  /// PUT Request
+  // ==================== PUT ====================
+
   Future<ResponseWrapper> putWrp(
       String url,
       dynamic params, {
@@ -225,13 +220,9 @@ class RequestHandler {
       );
 
       final Map<String, dynamic> responseData = _parseResponseData(response.data);
-      ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
+      final ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
 
-      ApiChecker.checkApi(
-        responseData['code'] ?? response.statusCode,
-        responseData['message'] ?? 'Success',
-      );
-
+      ApiChecker.checkApi(resWrp.code ?? response.statusCode ?? 0, resWrp.message ?? '');
       return resWrp;
     } on DioException catch (error, stackTrace) {
       final responseData = _extractErrorData(error);
@@ -239,8 +230,9 @@ class RequestHandler {
       throw RequestException(
         method: "PUT",
         url: baseUrl ?? mainUrl + url,
-        statusCode: responseData['code'],
+        statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
+        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
         data: params,
         error: error,
         trace: stackTrace,
@@ -259,7 +251,8 @@ class RequestHandler {
     }
   }
 
-  /// DELETE Request
+  // ==================== DELETE ====================
+
   Future<ResponseWrapper> deleteWrp(
       String url, {
         dynamic params,
@@ -288,13 +281,9 @@ class RequestHandler {
       );
 
       final Map<String, dynamic> responseData = _parseResponseData(response.data);
-      ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
+      final ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
 
-      ApiChecker.checkApi(
-        responseData['code'] ?? response.statusCode,
-        responseData['message'] ?? 'Success',
-      );
-
+      ApiChecker.checkApi(resWrp.code ?? response.statusCode ?? 0, resWrp.message ?? '');
       return resWrp;
     } on DioException catch (error, stackTrace) {
       final responseData = _extractErrorData(error);
@@ -302,8 +291,9 @@ class RequestHandler {
       throw RequestException(
         method: "DELETE",
         url: baseUrl ?? mainUrl + url,
-        statusCode: responseData['code'],
+        statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
+        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
         data: params,
         error: error,
         trace: stackTrace,
@@ -322,37 +312,47 @@ class RequestHandler {
     }
   }
 
-  /// Helper: Parse response data
+  // ==================== Helpers ====================
+
   Map<String, dynamic> _parseResponseData(dynamic data) {
-    if (data is String) {
-      return jsonDecode(data);
-    } else if (data is Map<String, dynamic>) {
-      return data;
-    } else {
-      return {'data': data};
-    }
+    if (data is String) return jsonDecode(data);
+    if (data is Map<String, dynamic>) return data;
+    return {'data': data};
   }
 
-  /// Helper: Extract error data from DioException
   Map<String, dynamic> _extractErrorData(DioException error) {
     try {
       final data = error.response?.data;
-      if (data is String) {
-        return jsonDecode(data);
-      } else if (data is Map<String, dynamic>) {
-        return data;
-      }
-    } catch (e) {
-      // Parsing failed, use fallback
-    }
+      if (data is String) return jsonDecode(data);
+      if (data is Map<String, dynamic>) return data;
+    } catch (_) {}
 
     return {
-      'code': error.response?.statusCode ?? 0,
+      'status': error.response?.statusCode?.toString() ?? '0',
       'message': error.message ?? 'Unknown error',
     };
   }
 
-  /// Helper: Log response
+  /// ✅ Parse status code - handles both int and String ("404" or 404)
+  int? _parseStatusCode(Map<String, dynamic> data) {
+    final raw = data['status'] ?? data['code'];
+    if (raw is int) return raw;
+    if (raw is String) return int.tryParse(raw);
+    return null;
+  }
+
+  /// ✅ Extract errorDetail from error object
+  /// Handles: { "error": { "error": "Invalid credentials" } }
+  String? _extractErrorDetail(Map<String, dynamic> data) {
+    final errorField = data['error'];
+    if (errorField is Map<String, dynamic>) {
+      return errorField['error']?.toString()
+          ?? errorField['message']?.toString()
+          ?? errorField.values.firstOrNull?.toString();
+    }
+    return null;
+  }
+
   void _logResponse({
     required String method,
     required String url,

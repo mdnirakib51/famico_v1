@@ -1,15 +1,14 @@
 import 'dart:developer';
 import 'dart:math' show min;
 import 'package:dio/dio.dart';
-
 import '../network/api_check.dart';
 
-/// Custom Exception for API Request Errors
 class RequestException implements Exception {
   final String method;
   final String url;
   final int? statusCode;
   final String? message;
+  final String? errorDetail;
   final Object error;
   final Response? res;
   final StackTrace trace;
@@ -21,6 +20,7 @@ class RequestException implements Exception {
     required this.url,
     this.statusCode,
     this.message,
+    this.errorDetail,
     required this.error,
     this.res,
     this.data,
@@ -30,28 +30,19 @@ class RequestException implements Exception {
     _handleException();
   }
 
-  /// Handle exception and show appropriate message
   void _handleException() {
     try {
-      ApiChecker.checkApi(
-        statusCode ?? 0,
-        message ?? "Unknown error",
-      );
+      // ✅ Pass both message and errorDetail
+      ApiChecker.checkApi(statusCode ?? 0, message ?? "Unknown error", errorDetail: errorDetail);
     } catch (e) {
-      // Handle any errors from ApiChecker
       log('Error in ApiChecker: $e');
     }
-
     _logException();
   }
 
-  /// Log exception details
   void _logException() {
     final responsePreview = res?.data != null
-        ? res!.data.toString().substring(
-      0,
-      min(100, res!.data.toString().length),
-    )
+        ? res!.data.toString().substring(0, min(100, res!.data.toString().length))
         : 'No response data';
 
     log(
@@ -61,6 +52,7 @@ class RequestException implements Exception {
     Url: $url
     StatusCode: $statusCode
     Message: $message
+    ErrorDetail: $errorDetail
     Params: ${data.toString()}
     Response: $responsePreview...
     ErrorMsg: "$errorMsg"
@@ -74,52 +66,25 @@ class RequestException implements Exception {
   }
 
   @override
-  String toString() {
-    return 'RequestException: $method $url - $statusCode: $message';
-  }
+  String toString() => 'RequestException: $method $url - $statusCode: $message';
 
-  /// Check if error is network related
-  bool get isNetworkError {
-    return error is DioException &&
-        (error as DioException).type == DioExceptionType.connectionTimeout ||
-        (error as DioException).type == DioExceptionType.receiveTimeout ||
-        (error as DioException).type == DioExceptionType.connectionError;
-  }
+  bool get isNetworkError =>
+      error is DioException &&
+          ((error as DioException).type == DioExceptionType.connectionTimeout ||
+          (error as DioException).type == DioExceptionType.receiveTimeout ||
+          (error as DioException).type == DioExceptionType.connectionError);
 
-  /// Check if error is unauthorized (401)
   bool get isUnauthorized => statusCode == 401;
+  bool get isForbidden    => statusCode == 403;
+  bool get isNotFound     => statusCode == 404;
+  bool get isServerError  => statusCode == 500;
 
-  /// Check if error is forbidden (403)
-  bool get isForbidden => statusCode == 403;
-
-  /// Check if error is not found (404)
-  bool get isNotFound => statusCode == 404;
-
-  /// Check if error is server error (500)
-  bool get isServerError => statusCode == 500;
-
-  /// Get user-friendly error message
   String get userMessage {
-    if (isNetworkError) {
-      return 'Network connection error. Please check your internet.';
-    }
-
-    if (isUnauthorized) {
-      return 'Session expired. Please login again.';
-    }
-
-    if (isForbidden) {
-      return 'You do not have permission to perform this action.';
-    }
-
-    if (isNotFound) {
-      return 'The requested resource was not found.';
-    }
-
-    if (isServerError) {
-      return 'Server error. Please try again later.';
-    }
-
-    return message ?? errorMsg ?? 'An error occurred. Please try again.';
+    if (isNetworkError)  return 'Network connection error. Please check your internet.';
+    if (isUnauthorized)  return 'Session expired. Please login again.';
+    if (isForbidden)     return 'You do not have permission to perform this action.';
+    if (isNotFound)      return errorDetail ?? message ?? 'The requested resource was not found.';
+    if (isServerError)   return 'Server error. Please try again later.';
+    return errorDetail ?? message ?? errorMsg ?? 'An error occurred. Please try again.';
   }
 }

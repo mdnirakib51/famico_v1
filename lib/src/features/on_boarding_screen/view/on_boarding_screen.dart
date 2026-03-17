@@ -1,15 +1,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../app/routes/app_navigator.dart';
+import '../../../app/routes/app_route.dart';
 import '../../../global/constants/colors_resources.dart';
 import '../../../global/constants/images.dart';
 import '../../../global/global_widget/global_bottom_widget.dart';
 import '../../../global/global_widget/global_image_loader.dart';
 import '../../../global/global_widget/global_sized_box.dart';
 import '../../../global/global_widget/global_text.dart';
-import '../../../global/utils/navigation.dart';
 import '../../../global/widget/container_space_background_widget.dart';
-import '../../auth/login/view/login_screen.dart';
 import '../bloc/on_boarding_bloc.dart';
 import '../bloc/on_boarding_event.dart';
 import '../bloc/on_boarding_state.dart';
@@ -130,7 +130,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> with TickerProvider
       child: BlocListener<OnBoardingBloc, OnBoardingState>(
         listener: (context, state) {
           if (state.status == OnBoardingStatus.navigating) {
-            navigateAndRemoveAll(context, LoginScreen());
+            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
           }
         },
         child: BlocBuilder<OnBoardingBloc, OnBoardingState>(

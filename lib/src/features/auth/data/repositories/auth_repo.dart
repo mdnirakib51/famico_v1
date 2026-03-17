@@ -40,8 +40,9 @@ class AuthRepository extends ApiHelper {
     params['phone'] = phone;
     params['email'] = email;
     params['passwordHash'] = password;
+    params['verificationStatus'] = true;
 
-    final response = await requestHandler.postWrp(AppConfig.logInUrl.url, params, isFormData: true);
+    final response = await requestHandler.postWrp(AppConfig.registrationUrl.url, params, isFormData: true);
     if(response.code == 200 || response.code == 201){
       return AuthModel.fromJson(response.data ?? {});
     }

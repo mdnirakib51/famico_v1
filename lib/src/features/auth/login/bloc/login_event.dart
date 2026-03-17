@@ -5,6 +5,7 @@ abstract class LoginEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+enum LoginField { email, password, rememberMe}
 class LoginFieldChanged extends LoginEvent {
   final LoginField field;
   final dynamic value;
@@ -15,7 +16,6 @@ class LoginFieldChanged extends LoginEvent {
   List<Object?> get props => [field, value];
 }
 
-enum LoginField { email, password, rememberMe}
 class LoginSubmitted extends LoginEvent {
   final String email;
   final String password;

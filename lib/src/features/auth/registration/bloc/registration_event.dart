@@ -33,3 +33,7 @@ class RegistrationSubmitted extends RegistrationEvent {
   @override
   List<Object?> get props => [username, phone, email, password];
 }
+
+class RegistrationWithGoogleRequested extends RegistrationEvent {}
+
+class RegistrationWithFacebookRequested extends RegistrationEvent {}

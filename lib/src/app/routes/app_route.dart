@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../../features/auth/login/view/login_screen.dart';
+import '../../features/auth/registration/view/registration_screen.dart';
 import '../../features/on_boarding_screen/view/on_boarding_screen.dart';
 import '../../features/splash_screen/view/splash_screen.dart';
 import '../../global/utils/navigation.dart';
@@ -40,6 +41,7 @@ class AppRouteGenerator {
       case AppRouteKeys.splash: return _route(const SplashScreen(), settings);
       case AppRouteKeys.onBoarding: return _route(const OnBoardingScreen(), settings);
       case AppRouteKeys.login: return _route(const LoginScreen(), settings);
+      case AppRouteKeys.registration: return _route(const RegistrationScreen(), settings);
 
     // ==@/~/@==> Home <==@/~/@==
       default: return _route(const _NotFoundScreen(), settings);

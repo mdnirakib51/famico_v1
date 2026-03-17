@@ -1,90 +1,98 @@
-// import 'dart:developer';
-// import 'package:bloc/bloc.dart';
-// import '../../data/models/auth_model.dart';
-// import '../../data/repositories/auth_repo.dart';
-// import '../../data/repositories/auth_service.dart';
-// import 'registration_event.dart';
-// import 'registration_state.dart';
-//
-// class LoginBloc extends Bloc<LoginEvent, LoginState> {
-//   final AuthRepository _authRepository = AuthRepository();
-//
-//   LoginBloc() : super(const LoginState()) {
-//     on<LoadSavedCredentials>(_onLoadSavedCredentials);
-//     on<LoginFieldChanged>(_onFieldChanged);
-//     on<LoginSubmitted>(_reqLogIn);
-//
-//     add(LoadSavedCredentials());
-//   }
-//
-//   Future<void> _onLoadSavedCredentials(LoadSavedCredentials event, Emitter<LoginState> emit) async {
-//     try {
-//       final credentials = AuthService.loadSavedCredentials();
-//       emit(state.copyWith(
-//         email: credentials['email'] ?? '',
-//         password: credentials['password'] ?? '',
-//         rememberMe: credentials['remember_me'] ?? false,
-//       ));
-//     } catch (e) {
-//       log('Error loading saved credentials: ${e.toString()}');
-//     }
-//   }
-//
-//   Future<void> _onFieldChanged(LoginFieldChanged event,Emitter<LoginState> emit) async {
-//     // Handle different field changes
-//     switch (event.field) {
-//       case LoginField.email:
-//         emit(state.copyWith(email: event.value as String));
-//         break;
-//       case LoginField.password:
-//         emit(state.copyWith(password: event.value as String));
-//         break;
-//       case LoginField.rememberMe:
-//         emit(state.copyWith(rememberMe: event.value as bool));
-//         break;
-//     }
-//
-//     _saveCredentialsIfRemembered();
-//   }
-//
-//   void _saveCredentialsIfRemembered() {
-//     if (state.rememberMe) {
-//       AuthService.saveCredentials(
-//         email: state.email,
-//         password: state.password,
-//         rememberMe: state.rememberMe,
-//       );
-//     }
-//   }
-//
-//   Future<void> _reqLogIn(LoginSubmitted event, Emitter<LoginState> emit) async {
-//     try {
-//       emit(state.copyWith(status: LoginStatus.loading));
-//       _saveCredentialsIfRemembered();
-//
-//       if (event.email.isNotEmpty && event.password.isNotEmpty) {
-//         final AuthModel response = await _authRepository.reqLogIn(
-//           email: event.email,
-//           password: event.password,
-//         );
-//
-//         if (response.token != null) {
-//           _authRepository.requestHandler.updateHeader(token: response.token ?? "");
-//         }
-//
-//         emit(state.copyWith(status: LoginStatus.success));
-//       } else {
-//         emit(state.copyWith(
-//           status: LoginStatus.failure,
-//           errorMessage: 'Email and password cannot be empty',
-//         ));
-//       }
-//     } catch (e) {
-//       log('Login error: ${e.toString()}');
-//       emit(state.copyWith(
-//         status: LoginStatus.failure,
-//         errorMessage: e.toString(),
-//       ));
-//     }
-//   }
-// }
+
+import 'dart:developer';
+import 'package:bloc/bloc.dart';
+import '../../data/models/auth_model.dart';
+import '../../data/repositories/auth_repo.dart';
+import 'registration_event.dart';
+import 'registration_state.dart';
+
+class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
+  final AuthRepository _authRepository = AuthRepository();
+
+  RegistrationBloc() : super(const RegistrationState()) {
+    on<RegistrationFieldChanged>(_onFieldChanged);
+    on<RegistrationSubmitted>(_reqRegister);
+    on<RegistrationWithGoogleRequested>(_onGoogleRegister);
+    on<RegistrationWithFacebookRequested>(_onFacebookRegister);
+  }
+
+  Future<void> _onFieldChanged(RegistrationFieldChanged event, Emitter<RegistrationState> emit) async {
+    switch (event.field) {
+      case RegistrationField.username:
+        emit(state.copyWith(name: event.value as String));
+        break;
+      case RegistrationField.email:
+        emit(state.copyWith(email: event.value as String));
+        break;
+      case RegistrationField.phone:
+        emit(state.copyWith(phone: event.value as String));
+        break;
+      case RegistrationField.password:
+        emit(state.copyWith(password: event.value as String));
+        break;
+      case RegistrationField.confirmPassword:
+        emit(state.copyWith(confirmPassword: event.value as String));
+        break;
+      case RegistrationField.agreeToTerms:
+
+    }
+  }
+
+  Future<void> _reqRegister(RegistrationSubmitted event, Emitter<RegistrationState> emit) async {
+    try {
+      emit(state.copyWith(status: RegistrationStatus.loading));
+
+      final AuthModel response = await _authRepository.reqRegistration(
+        username: event.username,
+        email: event.email,
+        phone: event.phone,
+        password: event.password,
+      );
+
+      if (response.token != null) {
+        _authRepository.requestHandler.updateHeader(token: response.token ?? "");
+      }
+
+      emit(state.copyWith(status: RegistrationStatus.success));
+    } catch (e) {
+      log('Registration error: ${e.toString()}');
+      emit(state.copyWith(
+        status: RegistrationStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onGoogleRegister(RegistrationWithGoogleRequested event, Emitter<RegistrationState> emit) async {
+    try {
+      emit(state.copyWith(status: RegistrationStatus.loading));
+      // TODO: Google Sign-In integration
+      // final googleUser = await GoogleSignIn().signIn();
+      log('Google registration requested');
+      emit(state.copyWith(status: RegistrationStatus.initial));
+    } catch (e) {
+      log('Google registration error: ${e.toString()}');
+      emit(state.copyWith(
+        status: RegistrationStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> _onFacebookRegister(RegistrationWithFacebookRequested event, Emitter<RegistrationState> emit) async {
+    try {
+      emit(state.copyWith(status: RegistrationStatus.loading));
+      // TODO: Facebook Login integration
+      // final result = await FacebookAuth.instance.login();
+      log('Facebook registration requested');
+      emit(state.copyWith(status: RegistrationStatus.initial));
+    } catch (e) {
+      log('Facebook registration error: ${e.toString()}');
+      emit(state.copyWith(
+        status: RegistrationStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+}

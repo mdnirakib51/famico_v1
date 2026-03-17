@@ -14,6 +14,7 @@ enum AppConfig {
   base,
   baseImage,
   logInUrl,
+  registrationUrl,
   logOutUrl,
 }
 
@@ -27,7 +28,7 @@ extension AppUrlExtension on AppConfig {
         _baseUrl = "";
         break;
       case ApiBaseUrl.isDev:
-        _baseUrl = "http://api.famico.info:8080"; // Default dev URL
+        _baseUrl = "http://api.famico.info:8080";
         break;
       case ApiBaseUrl.isLocalServer:
         _baseUrl = "";
@@ -73,9 +74,12 @@ extension AppUrlExtension on AppConfig {
         return _baseUrl;
       case AppConfig.baseImage:
         return "";
+
     /// ==========/@ Auth Api Url @/==========
       case AppConfig.logInUrl:
         return '/api/user/login';
+      case AppConfig.registrationUrl:
+        return '/api/user/register';
       case AppConfig.logOutUrl:
         return '/api/logout';
 

@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../app/routes/app_navigator.dart';
+import '../../../../app/routes/app_route.dart';
 import '../../../../global/constants/colors_resources.dart';
 import '../../../../global/constants/images.dart';
 import '../../../../global/constants/input_decoration.dart';
@@ -11,7 +13,10 @@ import '../../../../global/global_widget/global_progress_hub.dart';
 import '../../../../global/global_widget/global_sized_box.dart';
 import '../../../../global/global_widget/global_text.dart';
 import '../../../../global/global_widget/global_textform_field.dart';
+import '../../../../global/utils/navigation.dart';
 import '../../../../global/widget/container_space_background_widget.dart';
+import '../../registration/bloc/registration_bloc.dart';
+import '../../registration/view/registration_screen.dart';
 import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
 import '../bloc/login_state.dart';
@@ -271,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             const Spacer(),
                             GestureDetector(
                               onTap: () {
-                                // navigateTo(context, const RegistrationScreenBloc());
+                                AppNavigator.pushAndRemoveAll(context, AppRouteKeys.registration);
                               },
                               child: const Align(
                                 alignment: Alignment.center,

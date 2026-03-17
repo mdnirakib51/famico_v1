@@ -1,39 +1,46 @@
-
 import 'package:equatable/equatable.dart';
 
-enum LoginStatus { initial, loading, success, failure }
+enum RegistrationStatus { initial, loading, success, failure }
 
-class LoginState extends Equatable {
-  final LoginStatus status;
+class RegistrationState extends Equatable {
+  final RegistrationStatus status;
+  final String name;
   final String email;
+  final String phone;
   final String password;
-  final bool rememberMe;
+  final String confirmPassword;
   final String? errorMessage;
 
-  const LoginState({
-    this.status = LoginStatus.initial,
+  const RegistrationState({
+    this.status = RegistrationStatus.initial,
+    this.name = '',
     this.email = '',
+    this.phone = '',
     this.password = '',
-    this.rememberMe = false,
+    this.confirmPassword = '',
     this.errorMessage,
   });
 
-  LoginState copyWith({
-    LoginStatus? status,
+  RegistrationState copyWith({
+    RegistrationStatus? status,
+    String? name,
     String? email,
+    String? phone,
     String? password,
-    bool? rememberMe,
+    String? confirmPassword,
     String? errorMessage,
   }) {
-    return LoginState(
+    return RegistrationState(
       status: status ?? this.status,
+      name: name ?? this.name,
       email: email ?? this.email,
+      phone: phone ?? this.phone,
       password: password ?? this.password,
-      rememberMe: rememberMe ?? this.rememberMe,
+      confirmPassword: confirmPassword ?? this.confirmPassword,
       errorMessage: errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, email, password, rememberMe, errorMessage];
+  List<Object?> get props => [status, name, email, phone, password, confirmPassword, errorMessage];
 }

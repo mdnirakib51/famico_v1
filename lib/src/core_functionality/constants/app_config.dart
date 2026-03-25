@@ -16,6 +16,8 @@ enum AppConfig {
   logInUrl,
   registrationUrl,
   logOutUrl,
+
+  userProfileUrl,
 }
 
 extension AppUrlExtension on AppConfig {
@@ -83,6 +85,9 @@ extension AppUrlExtension on AppConfig {
       case AppConfig.logOutUrl:
         return '/api/logout';
 
+    /// ==========/@ User Api Url @/==========
+      case AppConfig.userProfileUrl:
+        return '/api/user/profile';
     }
   }
 }

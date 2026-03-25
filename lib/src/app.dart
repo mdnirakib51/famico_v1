@@ -5,6 +5,7 @@ import 'features/auth/login/bloc/login_bloc.dart';
 import 'features/auth/registration/bloc/registration_bloc.dart';
 import 'features/on_boarding_screen/bloc/on_boarding_bloc.dart';
 import 'features/splash_screen/bloc/splash_bloc.dart';
+import 'features/user/profile/bloc/profile_bloc.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => OnBoardingBloc()),
         BlocProvider(create: (_) => LoginBloc()),
         BlocProvider(create: (_) => RegistrationBloc()),
+        BlocProvider(create: (_) => ProfileBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

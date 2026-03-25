@@ -46,7 +46,8 @@ class _SplashScreenState extends State<SplashScreen> {
             AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
           } else {
             // Logged in → Home
-            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.home);
+            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
+            // AppNavigator.pushAndRemoveAll(context, AppRouteKeys.home);
           }
         }
       },

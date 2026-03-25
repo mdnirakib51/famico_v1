@@ -77,9 +77,9 @@ extension AppUrlExtension on AppConfig {
 
     /// ==========/@ Auth Api Url @/==========
       case AppConfig.logInUrl:
-        return '/api/user/login';
+        return '/api/auth/login';
       case AppConfig.registrationUrl:
-        return '/api/user/register';
+        return '/api/auth/register';
       case AppConfig.logOutUrl:
         return '/api/logout';
 

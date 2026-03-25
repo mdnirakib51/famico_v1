@@ -27,10 +27,6 @@ class RequestHandler {
       baseUrl: AppConfig.base.url,
       connectTimeout: ApiConstants.connectTimeout,
       receiveTimeout: ApiConstants.receiveTimeout,
-      headers: {
-        'Content-Type': ApiConstants.contentTypeJson,
-        'Accept': ApiConstants.keepAlive,
-      },
     ));
 
     final storage = await LocalStorageService.getInstance();
@@ -96,6 +92,7 @@ class RequestHandler {
 
       final Map<String, dynamic> responseData = _parseResponseData(response.data);
       final ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
+      resWrp.code ??= response.statusCode;
 
       ApiChecker.checkApi(resWrp.code ?? response.statusCode ?? 0, resWrp.message ?? '');
       return resWrp;
@@ -107,7 +104,7 @@ class RequestHandler {
         url: baseUrl ?? mainUrl + url,
         statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
-        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
+        errorDetail: _extractErrorDetail(responseData),
         data: params,
         error: error,
         trace: stackTrace,

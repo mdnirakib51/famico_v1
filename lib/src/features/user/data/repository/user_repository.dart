@@ -18,4 +18,31 @@ class UserRepository extends ApiHelper {
     }
     throw Exception('Response failed with code ${response.code}: ${response.message}');
   }
+
+  Future<ProfileModel> reqUpdateProfile({
+    required String name,
+    required String phone,
+    String? email,
+    String? dob,
+    int? age,
+    int? presentAddressId,
+    int? permanentAddressId,
+  }) async {
+    final Map<String, dynamic> params = {
+      'name': name,
+      'phone': phone,
+      'email': ?email,
+      'dob': ?dob,
+      'age': ?age,
+      'presentAddressId': ?presentAddressId,
+      'permanentAddressId': ?permanentAddressId,
+      'verificationStatus': true,
+    };
+
+    final response = await requestHandler.putWrp(AppConfig.updateProfileUrl.url, params);
+    if (response.code == 200 || response.code == 201) {
+      return ProfileModel.fromJson(response.data ?? {});
+    }
+    throw Exception('Update profile failed with code ${response.code}: ${response.message}');
+  }
 }

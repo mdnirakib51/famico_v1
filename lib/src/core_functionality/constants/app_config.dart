@@ -15,6 +15,8 @@ enum AppConfig {
   baseImage,
   logInUrl,
   registrationUrl,
+  forgetPasUrl,
+  resetPassUrl,
   logOutUrl,
 
   userProfileUrl,
@@ -84,6 +86,10 @@ extension AppUrlExtension on AppConfig {
         return '/api/auth/register';
       case AppConfig.logOutUrl:
         return '/api/logout';
+      case AppConfig.forgetPasUrl:
+        return '/api/auth/forget-password';
+      case AppConfig.resetPassUrl:
+        return '/api/auth/reset-password';
 
     /// ==========/@ User Api Url @/==========
       case AppConfig.userProfileUrl:

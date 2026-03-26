@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/routes/app_navigator.dart';
@@ -15,8 +14,8 @@ import '../../../../global/global_widget/global_text.dart';
 import '../../../../global/global_widget/global_textform_field.dart';
 import '../../../../global/utils/navigation.dart';
 import '../../../../global/widget/container_space_background_widget.dart';
-import '../../registration/bloc/registration_bloc.dart';
-import '../../registration/view/registration_screen.dart';
+import '../../forget_password/bloc/forget_password_bloc.dart';
+import '../../forget_password/view/forget_password_screen.dart';
 import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
 import '../bloc/login_state.dart';
@@ -34,7 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
-  // FocusNodes
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
@@ -58,7 +56,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
-        // Update controllers when credentials are loaded
         if (state.email.isNotEmpty && _emailController.text.isEmpty) {
           _emailController.text = state.email;
         }
@@ -66,15 +63,13 @@ class _LoginScreenState extends State<LoginScreen> {
           _passwordController.text = state.password;
         }
 
-        // Navigate on successful login
         if (state.status == LoginStatus.success) {
-          // Navigate to home/dashboard
           // navigateAndRemoveAll(context, DashboardScreen());
         }
 
-        // Show error message on failure
         if (state.status == LoginStatus.failure && state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!), backgroundColor: Colors.red),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.errorMessage!), backgroundColor: Colors.red),
           );
         }
       },
@@ -129,7 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               onChanged: (val) {
-                                context.read<LoginBloc>().add(LoginFieldChanged(field: LoginField.email, value: val));
+                                context.read<LoginBloc>().add(
+                                  LoginFieldChanged(field: LoginField.email, value: val),
+                                );
                               },
                               onFieldSubmitted: (_) {
                                 FocusScope.of(context).requestFocus(_passwordFocus);
@@ -143,6 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
 
                             sizedBoxH(10),
+
                             GlobalTextFormField(
                               controller: _passwordController,
                               focusNode: _passwordFocus,
@@ -155,7 +153,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               isPasswordField: true,
                               textInputAction: TextInputAction.done,
                               onChanged: (val) {
-                                context.read<LoginBloc>().add(LoginFieldChanged(field: LoginField.password, value: val));
+                                context.read<LoginBloc>().add(
+                                  LoginFieldChanged(field: LoginField.password, value: val),
+                                );
                               },
                               onFieldSubmitted: (_) {
                                 FocusScope.of(context).unfocus();
@@ -180,47 +180,73 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
 
                             sizedBoxH(10),
-                            sizedBoxH(10),
+
+                            // ── Remember Me + Forgot Password ──
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(
-                                  height: 18,
-                                  width: 18,
-                                  child: Checkbox(
-                                    value: state.rememberMe,
-                                    activeColor: ColorRes.appColor,
-                                    onChanged: (bool? value) {
-                                      context.read<LoginBloc>().add(
-                                        LoginFieldChanged(
-                                          field: LoginField.rememberMe,
-                                          value: value ?? false,
-                                        ),
-                                      );
-                                    },
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: Checkbox(
+                                        value: state.rememberMe,
+                                        activeColor: ColorRes.appColor,
+                                        onChanged: (bool? value) {
+                                          context.read<LoginBloc>().add(
+                                            LoginFieldChanged(
+                                              field: LoginField.rememberMe,
+                                              value: value ?? false,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    sizedBoxW(8),
+                                    const GlobalText(
+                                      str: "Remember Me",
+                                      color: ColorRes.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 12,
+                                    ),
+                                  ],
+                                ),
+
+                                // ── Forgot Password ──
+                                GestureDetector(
+                                  onTap: () {
+                                    navigateTo(
+                                      context,
+                                      BlocProvider(
+                                        create: (_) => ForgetPasswordBloc(),
+                                        child: const ForgetPasswordScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const GlobalText(
+                                    str: "Forgot Password?",
+                                    color: ColorRes.appColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
                                   ),
                                 ),
-                                sizedBoxW(10),
-                                const GlobalText(
-                                  str: "Remember Me",
-                                  color: ColorRes.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                )
                               ],
                             ),
 
                             sizedBoxH(40),
+
                             GlobalButtonWidget(
                               str: 'SIGN IN',
                               height: 45,
                               buttomColor: ColorRes.appColor,
                               onTap: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  context.read<LoginBloc>().add(LoginSubmitted(
-                                    email: _emailController.text.trim(),
-                                    password: _passwordController.text.trim(),
-                                  ),
+                                  context.read<LoginBloc>().add(
+                                    LoginSubmitted(
+                                      email: _emailController.text.trim(),
+                                      password: _passwordController.text.trim(),
+                                    ),
                                   );
                                 }
                               },
@@ -242,10 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: ColorRes.grey,
-                                      width: 0.5,
-                                    ),
+                                    border: Border.all(color: ColorRes.grey, width: 0.5),
                                   ),
                                   child: const GlobalImageLoader(
                                     imagePath: Images.facebookIc,
@@ -253,16 +276,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     width: 25,
                                   ),
                                 ),
-
                                 sizedBoxW(10),
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color: ColorRes.grey,
-                                      width: 0.5,
-                                    ),
+                                    border: Border.all(color: ColorRes.grey, width: 0.5),
                                   ),
                                   child: GlobalImageLoader(
                                     imagePath: Images.googleIc,
@@ -287,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
 
-                            sizedBoxH(30)
+                            sizedBoxH(30),
                           ],
                         ),
                       ),

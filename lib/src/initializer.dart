@@ -4,7 +4,6 @@ import 'core_functionality/constants/app_config.dart';
 import 'core_functionality/network/http_client/request_handler.dart';
 import 'core_functionality/storage/local_storage.dart';
 import 'core_functionality/storage/storage_controller.dart';
-import 'features/auth/data/repositories/auth_repo.dart';
 import 'global/utils/device_info.dart';
 
 final locator = GetIt.instance;

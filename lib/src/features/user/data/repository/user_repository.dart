@@ -1,3 +1,6 @@
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+
 import '../../../../core_functionality/constants/api_helper.dart';
 import '../../../../core_functionality/constants/app_config.dart';
 import '../../../../core_functionality/network/http_client/request_handler.dart';
@@ -45,4 +48,24 @@ class UserRepository extends ApiHelper {
     }
     throw Exception('Update profile failed with code ${response.code}: ${response.message}');
   }
+
+  /// =/@ Product List Method..
+  Future reqUploadDoc({
+    XFile? imagePath,
+    XFile? nidPath,
+  }) async {
+    MultipartFile? imagePathMul = imagePath != null ? await MultipartFile.fromFile(imagePath.path) : null;
+    MultipartFile? nidPathMul = nidPath != null ? await MultipartFile.fromFile(nidPath.path) : null;
+
+    final Map<String, dynamic> params = {};
+    if (imagePathMul != null) params['image'] = imagePathMul;
+    if (nidPathMul != null) params['nid'] = nidPathMul;
+
+    final response = await requestHandler.postWrp(AppConfig.uploadDocUrl.url, params, isFormData: true);
+    if (response.code == 200 || response.code == 201) {
+      return response.data ?? {};
+    }
+    throw Exception('Response failed with code ${response.code}: ${response.message}');
+  }
+
 }

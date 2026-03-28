@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         if (state.status == LoginStatus.success) {
-          // navigateAndRemoveAll(context, DashboardScreen());
+          AppNavigator.pushAndRemoveAll(context, AppRouteKeys.profile);
         }
 
         if (state.status == LoginStatus.failure && state.errorMessage != null) {

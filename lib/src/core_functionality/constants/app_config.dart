@@ -21,6 +21,7 @@ enum AppConfig {
 
   userProfileUrl,
   updateProfileUrl,
+  uploadDocUrl,
 }
 
 extension AppUrlExtension on AppConfig {
@@ -97,6 +98,8 @@ extension AppUrlExtension on AppConfig {
         return '/api/user/profile';
       case AppConfig.updateProfileUrl:
         return '/api/user/update-profile';
+      case AppConfig.uploadDocUrl:
+        return '/api/user/upload-documents';
     }
   }
 }

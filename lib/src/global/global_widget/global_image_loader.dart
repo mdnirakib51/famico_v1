@@ -1,11 +1,10 @@
-
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../constants/colors_resources.dart' show ColorRes;
 import '../constants/images.dart';
 
-enum ImageFor {asset, network, local}
+enum ImageFor { asset, network, local }
 
 class GlobalImageLoader extends StatelessWidget {
   const GlobalImageLoader({
@@ -21,7 +20,9 @@ class GlobalImageLoader extends StatelessWidget {
     this.errorColor,
     this.errorHeight,
     this.errorWidth,
+    this.headers,         // ← auth header এর জন্য
   });
+
   final String imagePath;
   final double? height;
   final double? width;
@@ -33,35 +34,37 @@ class GlobalImageLoader extends StatelessWidget {
   final Color? errorColor;
   final double? errorHeight;
   final double? errorWidth;
+  final Map<String, String>? headers; // ← নতুন
 
   @override
   Widget build(BuildContext context) {
     if (imageFor == ImageFor.network) {
       log("Image Path: $imagePath");
       return Image.network(
-          imagePath,
+        imagePath,
         height: height,
         width: width,
         fit: fit,
         color: color,
+        headers: headers,  // ← Bearer token pass হবে এখানে
         errorBuilder: errorBuilder ?? (context, exception, stackTrace) => Center(
-            child: Container(
-              height: height,
-              width: width,
-              color: ColorRes.grey.withAlpha(130),
-              child: Center(
-                child: Image.asset(errorImg ?? Images.appLogoShadow,
-                  height: errorHeight,
-                  width: errorWidth,
-                  fit: BoxFit.fill,
-                  color: errorColor,
-                ),
+          child: Container(
+            height: height,
+            width: width,
+            color: ColorRes.grey.withAlpha(130),
+            child: Center(
+              child: Image.asset(
+                errorImg ?? Images.appLogoShadow,
+                height: errorHeight,
+                width: errorWidth,
+                fit: BoxFit.fill,
+                color: errorColor,
               ),
-            )
-          )
+            ),
+          ),
+        ),
       );
     } else if (imageFor == ImageFor.local) {
-      // log("Image Path2: $imagePath");
       return Image.file(
         File(imagePath),
         height: height,
@@ -69,19 +72,20 @@ class GlobalImageLoader extends StatelessWidget {
         fit: fit,
         color: color,
         errorBuilder: errorBuilder ?? (context, exception, stackTrace) => Center(
-            child: Container(
-              height: height,
-              width: width,
-              color: ColorRes.black,
-              child: Center(
-                child: Image.asset(errorImg ?? Images.appLogoShadow,
-                  height: errorHeight,
-                  width: errorWidth,
-                  fit: BoxFit.fill,
-                  color: errorColor,
-                ),
+          child: Container(
+            height: height,
+            width: width,
+            color: ColorRes.black,
+            child: Center(
+              child: Image.asset(
+                errorImg ?? Images.appLogoShadow,
+                height: errorHeight,
+                width: errorWidth,
+                fit: BoxFit.fill,
+                color: errorColor,
               ),
-            )
+            ),
+          ),
         ),
       );
     } else {
@@ -92,19 +96,20 @@ class GlobalImageLoader extends StatelessWidget {
         fit: fit,
         color: color,
         errorBuilder: errorBuilder ?? (context, exception, stackTrace) => Center(
-            child: Container(
-              height: height,
-              width: width,
-              color: ColorRes.black,
-              child: Center(
-                child: Image.asset(errorImg ?? Images.appLogoShadow,
-                  height: errorHeight,
-                  width: errorWidth,
-                  fit: BoxFit.fill,
-                  color: errorColor,
-                ),
+          child: Container(
+            height: height,
+            width: width,
+            color: ColorRes.black,
+            child: Center(
+              child: Image.asset(
+                errorImg ?? Images.appLogoShadow,
+                height: errorHeight,
+                width: errorWidth,
+                fit: BoxFit.fill,
+                color: errorColor,
               ),
-            )
+            ),
+          ),
         ),
       );
     }

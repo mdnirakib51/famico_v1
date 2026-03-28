@@ -25,6 +25,12 @@ dependencies:
 
   in_app_update: ^4.2.3 # App Update Notifications
 
+  # Localization and Utilities
+  intl: ^0.19.0 # Localization and Date Formatting\
+
+  # UI Enhancements
+  image_picker: ^1.1.2
+
   # Utilities!
   google_fonts: ^7.0.0
   device_info_plus: ^11.3.3

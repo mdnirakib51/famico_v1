@@ -1,3 +1,4 @@
+import 'package:famico_v1/src/features/user/upload_doc/bloc/upload_doc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'app/routes/app_route.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => LoginBloc()),
         BlocProvider(create: (_) => RegistrationBloc()),
         BlocProvider(create: (_) => ProfileBloc()),
+        BlocProvider(create: (_) => UploadDocBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

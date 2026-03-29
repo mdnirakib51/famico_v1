@@ -1,6 +1,9 @@
 
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../app/routes/app_navigator.dart';
+import '../../../../app/routes/app_route.dart';
 import '../../../../core_functionality/constants/storage_keys.dart';
 import '../../../../core_functionality/storage/local_storage.dart';
 import '../../../../initializer.dart';
@@ -56,10 +59,11 @@ class AuthService {
     try {
       final String? token = locator<LocalStorage>().getString(key: StorageKeys.accessToken);
       SharedPreferences preferences = await SharedPreferences.getInstance();
+      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 
       // Save data that should persist after logout
       final Map<String, dynamic> persistentData = {
-        'base_url': locator<LocalStorage>().getString(key: StorageKeys.baseUrl),
         'email': locator<LocalStorage>().getString(key: StorageKeys.email),
         'password': locator<LocalStorage>().getString(key: StorageKeys.password),
         'remember_me': locator<LocalStorage>().getBool(key: StorageKeys.rememberMe),
@@ -76,7 +80,7 @@ class AuthService {
       await _restorePersistentData(persistentData);
 
       // Navigate to login screen
-      // await Get.offAll(() => const LoginScreen());
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(AppRouteKeys.login, (route) => false);
 
     } catch (e) {
       log("Error during logout: $e");
@@ -84,10 +88,6 @@ class AuthService {
   }
 
   static Future<void> _restorePersistentData(Map<String, dynamic> data) async {
-    if (data['base_url'] != null && data['base_url'].toString().isNotEmpty) {
-      locator<LocalStorage>().setString(key: StorageKeys.baseUrl, value: data['base_url']);
-    }
-
     if (data['remember_me'] == true) {
       if (data['email'] != null) {
         locator<LocalStorage>().setString(key: StorageKeys.email, value: data['email']);

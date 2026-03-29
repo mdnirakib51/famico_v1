@@ -5,6 +5,7 @@ import '../../features/auth/registration/view/registration_screen.dart';
 import '../../features/on_boarding_screen/view/on_boarding_screen.dart';
 import '../../features/splash_screen/view/splash_screen.dart';
 import '../../features/user/profile/view/profile_screen.dart';
+import '../../global/bottom_nav_bar/bottom_nav_bar.dart';
 import '../../global/utils/navigation.dart';
 
 /// All route name constants in one place
@@ -22,6 +23,7 @@ class AppRouteKeys {
   static const String otp          = '/otp';
 
   // ==================== Main ====================
+  static const String dashboard = '/dashboard';
   static const String home         = '/home';
   static const String notification = '/notification';
   static const String settings     = '/settings';
@@ -46,6 +48,7 @@ class AppRouteGenerator {
 
     // ==@/~/@==> User <==@/~/@==
       case AppRouteKeys.profile: return _route(const ProfileScreen(), settings);
+      case AppRouteKeys.dashboard: return _route(const BottomNavBar(), settings);
 
       default: return _route(const _NotFoundScreen(), settings);
     }

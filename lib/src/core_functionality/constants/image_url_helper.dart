@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'app_config.dart';
 
 class ImageUrlHelper {
@@ -9,6 +11,7 @@ class ImageUrlHelper {
 
     // Already a full URL — return as-is
     if (path.startsWith('http://') || path.startsWith('https://')) {
+      log("Img Path: $path");
       return path;
     }
 

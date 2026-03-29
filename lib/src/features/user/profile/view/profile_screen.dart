@@ -8,6 +8,7 @@ import '../../../../core_functionality/constants/image_url_helper.dart';
 import '../../../../global/constants/colors_resources.dart';
 import '../../../../global/global_widget/auth_netword_image.dart';
 import '../../../../global/global_widget/global_bottom_widget.dart';
+import '../../../../global/global_widget/global_image_loader.dart';
 import '../../../../global/global_widget/global_progress_hub.dart';
 import '../../../../global/global_widget/global_sized_box.dart';
 import '../../../../global/global_widget/global_text.dart';
@@ -113,12 +114,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocConsumer<UploadDocBloc, UploadDocState>(
       listener: (context, state) {
         if (state.status == UploadDocStatus.success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Documents uploaded successfully!'),
-              backgroundColor: Colors.green,
-            ),
-          );
           // Refresh profile after upload
           context.read<ProfileBloc>().add(FetchUserProfile());
         }
@@ -143,12 +138,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       sizedBoxH(20),
                       Stack(
                         children: [
+                          // GlobalImageLoader(
+                          //   imagePath: ImageUrlHelper.resolve(profile.image),
+                          //   imageFor: ImageFor.network,
+                          //   height: 50,
+                          //   width: 50,
+                          //   // headers: _authHeaders(),
+                          // ),
                           CircleAvatar(
                             radius: 50,
                             backgroundColor: ColorRes.appColor.withOpacity(0.15),
                             backgroundImage: uploadState.image != null
                                 ? FileImage(File(uploadState.image!.path))
-                                : AuthNetworkImage.provider(profile.image),
+                                :  AuthNetworkImage.provider(profile.image),
                             child: (uploadState.image == null &&
                                 !ImageUrlHelper.isValid(profile.image))
                                 ? const Icon(Icons.person, size: 50, color: ColorRes.appColor)

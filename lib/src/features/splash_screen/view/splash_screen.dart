@@ -39,15 +39,11 @@ class _SplashScreenState extends State<SplashScreen> {
       listener: (context, state) {
         if (state.status == SplashStatus.navigating) {
           if (!state.onBoardingCompleted) {
-            // First time user → OnBoarding
             AppNavigator.pushAndRemoveAll(context, AppRouteKeys.onBoarding);
           } else if (state.token == null) {
-            // Not logged in → Login
             AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
           } else {
-            // Logged in → Home
-            // AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
-            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.profile);
+            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.dashboard);
           }
         }
       },

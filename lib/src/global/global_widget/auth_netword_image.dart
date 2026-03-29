@@ -19,8 +19,7 @@ class AuthNetworkImage {
   }
 
   /// Returns a GlobalImageLoader widget with auth headers
-  static Widget widget(
-      String? path, {
+  static Widget widget(String? path, {
         double? height,
         double? width,
         BoxFit? fit,
@@ -39,7 +38,7 @@ class AuthNetworkImage {
       fit: fit,
       color: color,
       errorImg: errorImg,
-      headers: _authHeaders(),
+      // headers: _authHeaders(),
     );
   }
 

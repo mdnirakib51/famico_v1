@@ -1,5 +1,7 @@
 import 'package:famico_v1/src/app/routes/app_navigator.dart';
+import 'package:famico_v1/src/features/auth/data/repositories/auth_service.dart';
 import 'package:flutter/material.dart';
+import '../../app/routes/app_route.dart';
 import '../constants/colors_resources.dart';
 import '../global_widget/global_text.dart';
 
@@ -41,7 +43,8 @@ class GlobalAppBar extends StatelessWidget implements PreferredSizeWidget {
         splashRadius: 0.1,
         icon: const Icon(Icons.arrow_back, color: ColorRes.white, size: 22),
         onPressed: () {
-          AppNavigator.pop(context);
+          AuthService.performLogout();
+          // AppNavigator.pop(context);
         },
       )
           : const SizedBox.shrink(),

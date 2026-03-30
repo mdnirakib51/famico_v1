@@ -1,6 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../features/address/bloc/address_bloc.dart';
+import '../../../features/address/bloc/address_event.dart';
+import '../../../features/address/view/address_screen.dart';
 import '../../../features/user/profile/view/profile_screen.dart';
 import 'bottom_nav_bar_event.dart';
 import 'bottom_nav_bar_state.dart';
@@ -18,14 +22,13 @@ class BottomNavBarBloc extends Bloc<BottomNavBarEvent, BottomNavBarState> {
 
   // ── Nav items ──────────────────────────────────────────────────────────────
   final List<NavItemModel> navItems = [
-    NavItemModel(title: 'Contract', icon: Icons.receipt_long_rounded),
-    NavItemModel(title: 'Profile',  icon: Icons.person_rounded),
+    NavItemModel(title: 'Address', icon: Icons.location_on_rounded),
+    NavItemModel(title: 'Profile', icon: Icons.person_rounded),
   ];
 
   // ── Screens ────────────────────────────────────────────────────────────────
   final List<Widget> screens = [
-    // const ContractScreen(),
-    Container(),
+    AddressScreen(),
     const ProfileScreen(),
   ];
 

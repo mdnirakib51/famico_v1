@@ -2,6 +2,7 @@ import 'package:famico_v1/src/features/user/upload_doc/bloc/upload_doc_bloc.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'app/routes/app_route.dart';
+import 'features/address/bloc/address_bloc.dart';
 import 'features/auth/login/bloc/login_bloc.dart';
 import 'features/auth/registration/bloc/registration_bloc.dart';
 import 'features/on_boarding_screen/bloc/on_boarding_bloc.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => ProfileBloc()),
         BlocProvider(create: (_) => UploadDocBloc()),
         BlocProvider(create: (_) => BottomNavBarBloc()),
+        BlocProvider(create: (_) => AddressBloc()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

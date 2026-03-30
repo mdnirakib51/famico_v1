@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../global/components/global_appbar.dart';
 import '../../../../global/constants/colors_resources.dart';
 import '../../../../global/constants/input_decoration.dart';
 import '../../../../global/global_widget/global_bottom_widget.dart';
@@ -149,19 +150,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         return Scaffold(
           resizeToAvoidBottomInset: true,
           backgroundColor: ColorRes.appBackColor,
-          appBar: AppBar(
-            backgroundColor: ColorRes.appColor,
-            title: const GlobalText(
-              str: 'Update Profile',
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: ColorRes.white,
-            ),
-            centerTitle: true,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: ColorRes.white),
-              onPressed: () => goBack(context),
-            ),
+          appBar: GlobalAppBar(
+            title: 'Update Profile',
           ),
           body: ProgressHUD(
             inAsyncCall: state.status == UpdateProfileStatus.loading,
@@ -272,7 +262,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       hintText: 'Enter Your Email',
                       decoration: glassInputDecoration,
                       filled: true,
-                      fillColor: ColorRes.white,
+                      fillColor: ColorRes.grey.withValues(alpha: 0.2),
+                      enabled: false,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       onChanged: (val) => context.read<UpdateProfileBloc>().add(
@@ -373,4 +364,5 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       },
     );
   }
+
 }

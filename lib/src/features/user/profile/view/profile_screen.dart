@@ -81,18 +81,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             actions: [
               // ── Edit Button ──
               if (profileState.status == ProfileStatus.success && profile != null)
-                IconButton(
-                  icon: const Icon(Icons.edit_outlined, color: ColorRes.white),
-                  onPressed: () {
-                    navigateTo(
-                      context,
-                      BlocProvider(
-                        create: (_) => UpdateProfileBloc(),
-                        child: UpdateProfileScreen(profile: profile),
-                      ),
+                GestureDetector(
+                  onTap: () {
+                    navigateTo(context, BlocProvider(create: (_) => UpdateProfileBloc(), child: UpdateProfileScreen(profile: profile)),
                     );
                   },
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: ColorRes.white),
+                        borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit_outlined, color: ColorRes.white, size: 14),
+                        sizedBoxW(3),
+                        GlobalText(
+                          str: "Edit Profile",
+                          color: ColorRes.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
+                sizedBoxW(10),
             ],
           ),
           body: ProgressHUD(
@@ -295,6 +309,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
 
+
+                sizedBoxH(20),
+                GestureDetector(
+                  onTap: () => _showLogoutDialog(context),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.red.shade200),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withValues(alpha: 0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.logout_rounded, color: Colors.white, size: 20),
+                        sizedBoxW(10),
+                        GlobalText(
+                          str: 'Logout',
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 sizedBoxH(30),
               ],
             ),
@@ -473,6 +521,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: ColorRes.appColor,
               foregroundColor: ColorRes.white,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(Icons.logout_rounded, color: Colors.red.shade600, size: 22),
+            sizedBoxW(8),
+            const Text('Logout', style: TextStyle(fontWeight: FontWeight.w700)),
+          ],
+        ),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel',
+                style: TextStyle(color: ColorRes.grey, fontWeight: FontWeight.w600)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // TODO: context.read<AuthBloc>().add(LogoutRequested());
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade600,
+              foregroundColor: ColorRes.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),

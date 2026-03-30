@@ -37,14 +37,13 @@ class GlobalAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: backColor ?? ColorRes.appColor,
       automaticallyImplyLeading: false,
-      leadingWidth: isBackIc == true ? 56 : 0,
+      leadingWidth: isBackIc == true ? 50 : 0,
       leading: isBackIc == true
           ? IconButton(
         splashRadius: 0.1,
-        icon: const Icon(Icons.arrow_back, color: ColorRes.white, size: 22),
+        icon: const Icon(Icons.arrow_back_ios_new_outlined, color: ColorRes.white, size: 18),
         onPressed: () {
-          AuthService.performLogout();
-          // AppNavigator.pop(context);
+          AppNavigator.pop(context);
         },
       )
           : const SizedBox.shrink(),

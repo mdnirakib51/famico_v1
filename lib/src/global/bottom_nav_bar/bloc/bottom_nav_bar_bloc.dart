@@ -6,6 +6,7 @@ import '../../../features/address/bloc/address_bloc.dart';
 import '../../../features/address/bloc/address_event.dart';
 import '../../../features/address/view/address_screen.dart';
 import '../../../features/user/profile/view/profile_screen.dart';
+import '../../../features/user/profile_menu.dart';
 import 'bottom_nav_bar_event.dart';
 import 'bottom_nav_bar_state.dart';
 
@@ -29,7 +30,7 @@ class BottomNavBarBloc extends Bloc<BottomNavBarEvent, BottomNavBarState> {
   // ── Screens ────────────────────────────────────────────────────────────────
   final List<Widget> screens = [
     AddressScreen(),
-    const ProfileScreen(),
+    const ProfileMenuScreen(),
   ];
 
   BottomNavBarBloc() : super(const BottomNavBarState()) {

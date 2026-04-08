@@ -1,3 +1,4 @@
+import 'package:famico_v1/src/features/address/view/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app/routes/app_navigator.dart';
@@ -9,6 +10,7 @@ import '../../global/global_widget/global_progress_hub.dart';
 import '../../global/global_widget/global_sized_box.dart';
 import '../../global/global_widget/global_text.dart';
 import '../auth/data/repositories/auth_service.dart';
+import '../auth/reset_password/view/reset_password_screen.dart';
 import 'profile/bloc/profile_bloc.dart';
 import 'profile/bloc/profile_event.dart';
 import 'profile/bloc/profile_state.dart';
@@ -32,6 +34,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         final profile = state.profileModel?.user;
+        final topPadding = MediaQuery.of(context).padding.top;
 
         return Scaffold(
           backgroundColor: ColorRes.white,
@@ -41,7 +44,58 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
               child: Column(
                 children: [
                   // ── Cover + Avatar overlap ─────────────────────────────────
-                  _buildCoverSection(context, state),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.topCenter,
+                    children: [
+                      // Cover
+
+                      SizedBox(height: 200, width: size(context).width),
+                      Container(
+                        height: 120 + topPadding,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              ColorRes.appColor,
+                              ColorRes.appColor.withOpacity(0.7),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                        ),
+                      ),
+
+                      // Avatar — overlapping the cover bottom
+                      Positioned(
+                        bottom: 10,
+                        child: Container(
+                          width: 90,
+                          height: 90,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.red, width: 1),
+                            color: Colors.white,
+                          ),
+                          child: ClipOval(
+                            child: ImageUrlHelper.isValid(profile?.details?.image)
+                                ? GlobalImageLoader(
+                              imagePath: ImageUrlHelper.resolve(profile?.details?.image),
+                              imageFor: ImageFor.network,
+                              height: 90,
+                              width: 90,
+                              fit: BoxFit.cover,
+                            )
+                                : const Icon(
+                              Icons.person,
+                              size: 48,
+                              color: ColorRes.appColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
 
                   GlobalText(
                     str: profile?.details?.name ?? '—',
@@ -58,51 +112,27 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                     title: 'Profile Information',
                     onTap: () => AppNavigator.push(context, AppRouteKeys.profile),
                   ),
+
                   _ProfileMenuItem(
                     icon: Icons.location_on_outlined,
-                    title: 'Location',
-                    onTap: () {},
+                    title: 'Address',
+                    onTap: () => AppNavigator.push(context, AppRouteKeys.address),
                   ),
-                  _ProfileMenuItem(
-                    icon: Icons.swap_horiz_rounded,
-                    title: 'Transactions',
-                    onTap: () {},
-                  ),
-                  _ProfileMenuItem(
-                    icon: Icons.favorite_border_rounded,
-                    title: 'Favorites',
-                    onTap: () {},
-                  ),
+
                   _ProfileMenuItem(
                     icon: Icons.lock_outline_rounded,
-                    title: 'Password',
-                    onTap: () {},
+                    title: 'Change Password',
+                    onTap: () {
+                      // AppNavigator.push(context, ResetPasswordScreen());
+                    },
                   ),
+
                   _ProfileMenuItem(
                     icon: Icons.info_outline_rounded,
                     title: 'About Us',
                     onTap: () {},
                   ),
-                  _ProfileMenuItem(
-                    icon: Icons.description_outlined,
-                    title: 'Terms and Conditions',
-                    onTap: () {},
-                  ),
-                  _ProfileMenuItem(
-                    icon: Icons.policy_outlined,
-                    title: 'Privacy policy',
-                    onTap: () {},
-                  ),
-                  _ProfileMenuItem(
-                    icon: Icons.help_outline_rounded,
-                    title: 'FAQ',
-                    onTap: () {},
-                  ),
-                  _ProfileMenuItem(
-                    icon: Icons.headset_mic_outlined,
-                    title: 'Contact Support',
-                    onTap: () {},
-                  ),
+
                   _ProfileMenuItem(
                     icon: Icons.delete_outline_rounded,
                     title: 'Delete Account',
@@ -142,72 +172,6 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
           ),
         );
       },
-    );
-  }
-
-  // ── Cover + Avatar ──────────────────────────────────────────────────────────
-  Widget _buildCoverSection(BuildContext context, ProfileState state) {
-    final profile = state.profileModel?.user;
-    final topPadding = MediaQuery.of(context).padding.top;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.topCenter,
-      children: [
-        // Cover
-
-        SizedBox(height: 200, width: size(context).width),
-        Container(
-          height: 120 + topPadding,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                ColorRes.appColor,
-                ColorRes.appColor.withOpacity(0.7),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-
-        // Dark overlay
-        // Container(
-        //   height: 160 + topPadding,
-        //   width: double.infinity,
-        //   color: Colors.black.withOpacity(0.15),
-        // ),
-
-        // Avatar — overlapping the cover bottom
-        Positioned(
-          bottom: 10,
-          child: Container(
-            width: 90,
-            height: 90,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.red, width: 1),
-              color: Colors.white,
-            ),
-            child: ClipOval(
-              child: ImageUrlHelper.isValid(profile?.phone)
-                  ? GlobalImageLoader(
-                imagePath: ImageUrlHelper.resolve(profile?.details?.name),
-                imageFor: ImageFor.network,
-                height: 90,
-                width: 90,
-                fit: BoxFit.cover,
-              )
-                  : const Icon(
-                Icons.person,
-                size: 48,
-                color: ColorRes.appColor,
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 

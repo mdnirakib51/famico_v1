@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:famico_v1/src/core_functionality/constants/app_config.dart';
 import 'package:flutter/material.dart';
 import '../constants/colors_resources.dart' show ColorRes;
 import '../constants/images.dart';
@@ -41,12 +42,12 @@ class GlobalImageLoader extends StatelessWidget {
     if (imageFor == ImageFor.network) {
       log("Image Path: $imagePath");
       return Image.network(
-        imagePath,
+        '${AppConfig.base.url}$imagePath',
         height: height,
         width: width,
         fit: fit,
         color: color,
-        headers: headers,  // ← Bearer token pass হবে এখানে
+        headers: headers,
         errorBuilder: errorBuilder ?? (context, exception, stackTrace) => Center(
           child: Container(
             height: height,

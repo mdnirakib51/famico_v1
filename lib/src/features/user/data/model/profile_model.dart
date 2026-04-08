@@ -1,193 +1,198 @@
 class ProfileModel {
-  Profile? profile;
+  UserInfo? user;
 
-  ProfileModel({this.profile});
+  ProfileModel({this.user});
 
   ProfileModel.fromJson(Map<String, dynamic> json) {
-    profile =
-    json['profile'] != null ? Profile.fromJson(json['profile']) : null;
+    user = json['user'] != null ? UserInfo.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (profile != null) {
-      data['profile'] = profile!.toJson();
+    if (user != null) {
+      data['user'] = user!.toJson();
     }
     return data;
   }
 }
 
-class Profile {
-  int? id;
-  String? name;
-  String? phone;
-  String? email;
-  String? dob;
-  int? age;
-  int? presentAddressId;
-  int? permanentAddressId;
-  Null? loginAttempt;
-  String? image;
-  String? nid;
-  String? lastLogin;
-  PresentAddress? presentAddress;
-  PresentAddress? permanentAddress;
-  AuthEntity? authEntity;
-
-  Profile(
-      {this.id,
-        this.name,
-        this.phone,
-        this.email,
-        this.dob,
-        this.age,
-        this.presentAddressId,
-        this.permanentAddressId,
-        this.loginAttempt,
-        this.image,
-        this.nid,
-        this.lastLogin,
-        this.presentAddress,
-        this.permanentAddress,
-        this.authEntity});
-
-  Profile.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    phone = json['phone'];
-    email = json['email'];
-    dob = json['dob'];
-    age = json['age'];
-    presentAddressId = json['presentAddressId'];
-    permanentAddressId = json['permanentAddressId'];
-    loginAttempt = json['loginAttempt'];
-    image = json['image'];
-    nid = json['nid'];
-    lastLogin = json['lastLogin'];
-    presentAddress = json['presentAddress'] != null
-        ? PresentAddress.fromJson(json['presentAddress'])
-        : null;
-    permanentAddress = json['permanentAddress'] != null
-        ? PresentAddress.fromJson(json['permanentAddress'])
-        : null;
-    authEntity = json['authEntity'] != null
-        ? AuthEntity.fromJson(json['authEntity'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['phone'] = phone;
-    data['email'] = email;
-    data['dob'] = dob;
-    data['age'] = age;
-    data['presentAddressId'] = presentAddressId;
-    data['permanentAddressId'] = permanentAddressId;
-    data['loginAttempt'] = loginAttempt;
-    data['image'] = image;
-    data['nid'] = nid;
-    data['lastLogin'] = lastLogin;
-    if (presentAddress != null) {
-      data['presentAddress'] = presentAddress!.toJson();
-    }
-    if (permanentAddress != null) {
-      data['permanentAddress'] = permanentAddress!.toJson();
-    }
-    if (authEntity != null) {
-      data['authEntity'] = authEntity!.toJson();
-    }
-    return data;
-  }
-}
-
-class PresentAddress {
-  int? id;
-  String? street;
-  String? zip;
-  String? city;
-  String? state;
-  String? country;
-  String? addressType;
-  int? createdByUserId;
-
-  PresentAddress(
-      {this.id,
-        this.street,
-        this.zip,
-        this.city,
-        this.state,
-        this.country,
-        this.addressType,
-        this.createdByUserId});
-
-  PresentAddress.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    street = json['street'];
-    zip = json['zip'];
-    city = json['city'];
-    state = json['state'];
-    country = json['country'];
-    addressType = json['addressType'];
-    createdByUserId = json['createdByUserId'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['street'] = street;
-    data['zip'] = zip;
-    data['city'] = city;
-    data['state'] = state;
-    data['country'] = country;
-    data['addressType'] = addressType;
-    data['createdByUserId'] = createdByUserId;
-    return data;
-  }
-}
-
-class AuthEntity {
-  int? id;
+class UserInfo {
+  String? id;
   String? username;
+  String? dialCode;
   String? phone;
   String? email;
-  String? passwordHash;
-  Null? loginAttempt;
+  String? password;
   String? lastLogin;
-  Null? blockingTime;
+  int? loginAttempt;
+  int? otp;
+  String? blockingTime;
+  String? createdAt;
+  String? updatedAt;
+  Details? details;
+  List<Addresses>? addresses;
 
-  AuthEntity(
+  UserInfo(
       {this.id,
         this.username,
+        this.dialCode,
         this.phone,
         this.email,
-        this.passwordHash,
-        this.loginAttempt,
+        this.password,
         this.lastLogin,
-        this.blockingTime});
+        this.loginAttempt,
+        this.otp,
+        this.blockingTime,
+        this.createdAt,
+        this.updatedAt,
+        this.details,
+        this.addresses});
 
-  AuthEntity.fromJson(Map<String, dynamic> json) {
+  UserInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     username = json['username'];
+    dialCode = json['dial_code'];
     phone = json['phone'];
     email = json['email'];
-    passwordHash = json['passwordHash'];
-    loginAttempt = json['loginAttempt'];
-    lastLogin = json['lastLogin'];
-    blockingTime = json['blockingTime'];
+    password = json['password'];
+    lastLogin = json['last_login'];
+    loginAttempt = json['login_attempt'];
+    otp = json['otp'];
+    blockingTime = json['blocking_time'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    details =
+    json['details'] != null ? Details.fromJson(json['details']) : null;
+    if (json['addresses'] != null) {
+      addresses = <Addresses>[];
+      json['addresses'].forEach((v) {
+        addresses!.add(Addresses.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['username'] = username;
+    data['dial_code'] = dialCode;
     data['phone'] = phone;
     data['email'] = email;
-    data['passwordHash'] = passwordHash;
-    data['loginAttempt'] = loginAttempt;
-    data['lastLogin'] = lastLogin;
-    data['blockingTime'] = blockingTime;
+    data['password'] = password;
+    data['last_login'] = lastLogin;
+    data['login_attempt'] = loginAttempt;
+    data['otp'] = otp;
+    data['blocking_time'] = blockingTime;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (details != null) {
+      data['details'] = details!.toJson();
+    }
+    if (addresses != null) {
+      data['addresses'] = addresses!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Details {
+  String? id;
+  String? userId;
+  String? name;
+  String? gender;
+  String? dob;
+  int? age;
+  String? image;
+  String? createdAt;
+  String? updatedAt;
+
+  Details(
+      {this.id,
+        this.userId,
+        this.name,
+        this.gender,
+        this.dob,
+        this.age,
+        this.image,
+        this.createdAt,
+        this.updatedAt});
+
+  Details.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    name = json['name'];
+    gender = json['gender'];
+    dob = json['dob'];
+    age = json['age'];
+    image = json['image'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['user_id'] = userId;
+    data['name'] = name;
+    data['gender'] = gender;
+    data['dob'] = dob;
+    data['age'] = age;
+    data['image'] = image;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    return data;
+  }
+}
+
+class Addresses {
+  String? id;
+  String? userId;
+  String? street;
+  String? city;
+  String? state;
+  String? zip;
+  String? country;
+  String? addressType;
+  String? createdAt;
+  String? updatedAt;
+
+  Addresses(
+      {this.id,
+        this.userId,
+        this.street,
+        this.city,
+        this.state,
+        this.zip,
+        this.country,
+        this.addressType,
+        this.createdAt,
+        this.updatedAt});
+
+  Addresses.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    street = json['street'];
+    city = json['city'];
+    state = json['state'];
+    zip = json['zip'];
+    country = json['country'];
+    addressType = json['address_type'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['user_id'] = userId;
+    data['street'] = street;
+    data['city'] = city;
+    data['state'] = state;
+    data['zip'] = zip;
+    data['country'] = country;
+    data['address_type'] = addressType;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

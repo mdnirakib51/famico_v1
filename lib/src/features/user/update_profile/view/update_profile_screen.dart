@@ -15,7 +15,7 @@ import '../bloc/update_profile_event.dart';
 import '../bloc/update_profile_state.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
-  final Profile profile; // pass existing profile to pre-fill
+  final UserInfo profile; // pass existing profile to pre-fill
 
   const UpdateProfileScreen({super.key, required this.profile});
 
@@ -42,12 +42,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void initState() {
     super.initState();
     // Pre-fill from existing profile
-    _nameController  = TextEditingController(text: widget.profile.name ?? '');
+    _nameController  = TextEditingController(text: widget.profile.details?.name ?? '');
     _phoneController = TextEditingController(text: widget.profile.phone ?? '');
     _emailController = TextEditingController(text: widget.profile.email ?? '');
-    _dobController   = TextEditingController(text: widget.profile.dob ?? '');
+    _dobController   = TextEditingController(text: widget.profile.details?.dob ?? '');
     _ageController   = TextEditingController(
-      text: widget.profile.age != null ? widget.profile.age.toString() : '',
+      text: widget.profile?.details?.age != null ? widget.profile.details?.age.toString() : '',
     );
   }
 
@@ -169,12 +169,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           CircleAvatar(
                             radius: 48,
                             backgroundColor: ColorRes.appColor.withOpacity(0.15),
-                            backgroundImage: widget.profile.image != null &&
-                                widget.profile.image!.isNotEmpty
-                                ? NetworkImage(widget.profile.image!)
+                            backgroundImage: widget.profile.details?.image != null &&
+                                (widget.profile.details?.image?.isNotEmpty ?? false)
+                                ? NetworkImage(widget.profile.details?.image ?? '')
                                 : null,
-                            child: widget.profile.image == null ||
-                                widget.profile.image!.isEmpty
+                            child: widget.profile.details?.image == null ||
+                                (widget.profile.details?.image?.isEmpty ?? true)
                                 ? const Icon(Icons.person,
                                 size: 48, color: ColorRes.appColor)
                                 : null,

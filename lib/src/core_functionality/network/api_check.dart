@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:famico_v1/src/features/auth/data/repositories/auth_service.dart';
 import 'package:flutter/material.dart';
 import '../../global/utils/toast_service.dart';
 
@@ -34,6 +35,7 @@ class ApiChecker {
           displayMessage.isEmpty ? 'Unauthorized. Please login again.' : displayMessage,
           icon: Icons.lock_outline,
         );
+
         break;
 
       case 403:

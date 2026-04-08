@@ -36,7 +36,7 @@ extension AppUrlExtension on AppConfig {
         _baseUrl = "";
         break;
       case ApiBaseUrl.isDev:
-        _baseUrl = "http://api.famico.info:8080";
+        _baseUrl = "http://famico.info";
         break;
       case ApiBaseUrl.isLocalServer:
         _baseUrl = "";
@@ -85,27 +85,27 @@ extension AppUrlExtension on AppConfig {
 
     /// ==========/@ Auth Api Url @/==========
       case AppConfig.logInUrl:
-        return '/api/auth/login';
+        return '/api/v1/user/auth/login';
       case AppConfig.registrationUrl:
-        return '/api/auth/register';
+        return '/api/v1/auth/register';
       case AppConfig.logOutUrl:
-        return '/api/logout';
+        return '/api/v1/logout';
       case AppConfig.forgetPasUrl:
-        return '/api/auth/forget-password';
+        return '/api/v1/auth/forget-password';
       case AppConfig.resetPassUrl:
-        return '/api/auth/reset-password';
+        return '/api/v1/auth/reset-password';
 
     /// ==========/@ User Api Url @/==========
       case AppConfig.userProfileUrl:
-        return '/api/user/profile';
+        return '/api/v1/user/profile';
       case AppConfig.updateProfileUrl:
-        return '/api/user/update-profile';
+        return '/api/v1/user/update-profile';
       case AppConfig.uploadDocUrl:
-        return '/api/user/upload-documents';
+        return '/api/v1/user/upload-documents';
 
     /// ==========/@ Address Api Url @/==========
       case AppConfig.addressUrl:
-        return '/api/address';
+        return '/api/v1/address';
     }
   }
 }

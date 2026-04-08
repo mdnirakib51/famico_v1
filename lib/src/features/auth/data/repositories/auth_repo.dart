@@ -19,13 +19,13 @@ class AuthRepository extends ApiHelper {
 
     Map<String, dynamic> params = {};
     params['email'] = email;
-    params['passwordHash'] = password;
+    params['password'] = password;
 
     final response = await requestHandler.postWrp(AppConfig.logInUrl.url, params);
     if(response.status == '200' || response.status == '201' || response.isSuccess){
       return AuthModel.fromJson(response.data ?? {});
     }
-    throw Exception('Login 1 failed with code ${response.code}: ${response.message}');
+    throw Exception(response.message);
   }
 
   Future<AuthModel> reqRegistration({

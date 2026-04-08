@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../app/routes/app_navigator.dart';
@@ -9,6 +8,7 @@ import '../../global/global_widget/global_image_loader.dart';
 import '../../global/global_widget/global_progress_hub.dart';
 import '../../global/global_widget/global_sized_box.dart';
 import '../../global/global_widget/global_text.dart';
+import '../auth/data/repositories/auth_service.dart';
 import 'profile/bloc/profile_bloc.dart';
 import 'profile/bloc/profile_event.dart';
 import 'profile/bloc/profile_state.dart';
@@ -31,45 +31,111 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        final profile = state.profileModel?.profile;
+        final profile = state.profileModel?.user;
 
         return Scaffold(
-          backgroundColor: ColorRes.appBackColor,
+          backgroundColor: ColorRes.white,
           body: ProgressHUD(
             inAsyncCall: state.status == ProfileStatus.loading,
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // ── Cover + Avatar + Name ──────────────────────────────────
-                  _buildHeader(context, state),
+                  // ── Cover + Avatar overlap ─────────────────────────────────
+                  _buildCoverSection(context, state),
 
-                  // ── Menu List ──────────────────────────────────────────────
+                  GlobalText(
+                    str: profile?.details?.name ?? '—',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: ColorRes.appColor,
+                  ),
+
+
+                  sizedBoxH(20),
+                  // ── Menu Items ─────────────────────────────────────────────
+                  _ProfileMenuItem(
+                    icon: Icons.person_outline_rounded,
+                    title: 'Profile Information',
+                    onTap: () => AppNavigator.push(context, AppRouteKeys.profile),
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.location_on_outlined,
+                    title: 'Location',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.swap_horiz_rounded,
+                    title: 'Transactions',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.favorite_border_rounded,
+                    title: 'Favorites',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.lock_outline_rounded,
+                    title: 'Password',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.info_outline_rounded,
+                    title: 'About Us',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.description_outlined,
+                    title: 'Terms and Conditions',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.policy_outlined,
+                    title: 'Privacy policy',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.help_outline_rounded,
+                    title: 'FAQ',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.headset_mic_outlined,
+                    title: 'Contact Support',
+                    onTap: () {},
+                  ),
+                  _ProfileMenuItem(
+                    icon: Icons.delete_outline_rounded,
+                    title: 'Delete Account',
+                    onTap: () {},
+                    isDestructive: true,
+                  ),
+
+                  // ── Log Out ────────────────────────────────────────────────
                   Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        _menuCard(
-                          icon: Icons.person_outline_rounded,
-                          title: 'My Profile',
-                          subtitle: 'View and edit your personal info',
-                          onTap: () {
-                            AppNavigator.pushAndRemoveAll(context, AppRouteKeys.profile);
-                          },
-                        ),
-
-                        sizedBoxH(12),
-
-                        _menuCard(
-                          icon: Icons.people_outline_rounded,
-                          title: 'Family',
-                          subtitle: 'Manage your family members',
-                          onTap: () {
-                            // TODO: navigate to Family screen
-                          },
-                        ),
-                      ],
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: GestureDetector(
+                      onTap: () => _showLogoutDialog(context),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.logout_rounded,
+                            color: ColorRes.appColor,
+                            size: 18,
+                          ),
+                          sizedBoxW(8),
+                          GlobalText(
+                            str: 'Log Out',
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: ColorRes.appColor,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+
+                  sizedBoxH(20),
                 ],
               ),
             ),
@@ -79,17 +145,20 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
     );
   }
 
-  // ── Header ─────────────────────────────────────────────────────────────────
-  Widget _buildHeader(BuildContext context, ProfileState state) {
-    final profile = state.profileModel?.profile;
+  // ── Cover + Avatar ──────────────────────────────────────────────────────────
+  Widget _buildCoverSection(BuildContext context, ProfileState state) {
+    final profile = state.profileModel?.user;
+    final topPadding = MediaQuery.of(context).padding.top;
 
     return Stack(
       clipBehavior: Clip.none,
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
       children: [
-        // ── Cover Image ──────────────────────────────────────────────────────
+        // Cover
+
+        SizedBox(height: 200, width: size(context).width),
         Container(
-          height: 180,
+          height: 120 + topPadding,
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -101,148 +170,160 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: ImageUrlHelper.isValid(profile?.image)
-              ? GlobalImageLoader(
-            imagePath: ImageUrlHelper.resolve(profile?.image),
-            imageFor: ImageFor.network,
-            height: 180,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          )
-              : null,
         ),
 
-        // ── Dark overlay on cover ────────────────────────────────────────────
-        Container(
-          height: 180,
-          width: double.infinity,
-          color: Colors.black.withOpacity(0.25),
-        ),
+        // Dark overlay
+        // Container(
+        //   height: 160 + topPadding,
+        //   width: double.infinity,
+        //   color: Colors.black.withOpacity(0.15),
+        // ),
 
-        // ── Avatar + Name (centered on cover bottom) ─────────────────────────
+        // Avatar — overlapping the cover bottom
         Positioned(
-          bottom: -50,
-          child: Column(
-            children: [
-              // Avatar
-              Container(
-                width: 90,
+          bottom: 10,
+          child: Container(
+            width: 90,
+            height: 90,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.red, width: 1),
+              color: Colors.white,
+            ),
+            child: ClipOval(
+              child: ImageUrlHelper.isValid(profile?.phone)
+                  ? GlobalImageLoader(
+                imagePath: ImageUrlHelper.resolve(profile?.details?.name),
+                imageFor: ImageFor.network,
                 height: 90,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: ColorRes.white, width: 3),
-                  color: ColorRes.appColor.withOpacity(0.15),
-                ),
-                child: ClipOval(
-                  child: ImageUrlHelper.isValid(profile?.image)
-                      ? GlobalImageLoader(
-                    imagePath: ImageUrlHelper.resolve(profile?.image),
-                    imageFor: ImageFor.network,
-                    height: 90,
-                    width: 90,
-                    fit: BoxFit.cover,
-                  )
-                      : const Icon(
-                    Icons.person,
-                    size: 48,
-                    color: ColorRes.appColor,
-                  ),
-                ),
+                width: 90,
+                fit: BoxFit.cover,
+              )
+                  : const Icon(
+                Icons.person,
+                size: 48,
+                color: ColorRes.appColor,
               ),
-            ],
+            ),
           ),
         ),
       ],
     );
   }
-}
 
-// ── Spacer for avatar overlap + name section ────────────────────────────────
-Widget _buildNameSection(ProfileState state) {
-  final profile = state.profileModel?.profile;
-  return Container(
-    color: ColorRes.appBackColor,
-    width: double.infinity,
-    padding: const EdgeInsets.only(top: 60, bottom: 16),
-    child: Column(
-      children: [
-        GlobalText(
-          str: profile?.name ?? '—',
-          fontSize: 20,
+  // ── Logout Dialog ───────────────────────────────────────────────────────────
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: const GlobalText(
+          str: 'Log Out',
+          fontSize: 18,
           fontWeight: FontWeight.w700,
           color: ColorRes.black,
         ),
-        sizedBoxH(4),
-        GlobalText(
-          str: profile?.email ?? '—',
-          fontSize: 13,
+        content: const GlobalText(
+          str: 'Are you sure you want to log out?',
+          fontSize: 14,
           fontWeight: FontWeight.w400,
           color: ColorRes.grey,
         ),
-      ],
-    ),
-  );
-}
-
-// ── Menu Card ─────────────────────────────────────────────────────────────────
-Widget _menuCard({
-  required IconData icon,
-  required String title,
-  required String subtitle,
-  required VoidCallback onTap,
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: ColorRes.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const GlobalText(
+              str: 'Cancel',
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: ColorRes.grey,
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+              AuthService.performLogout(context);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              decoration: BoxDecoration(
+                color: ColorRes.appColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const GlobalText(
+                str: 'Log Out',
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
-      child: Row(
-        children: [
-          // Icon box
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: ColorRes.appColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: ColorRes.appColor, size: 22),
-          ),
-          sizedBoxW(14),
-          // Title & subtitle
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+}
+
+// ── Single Menu Item ───────────────────────────────────────────────────────────
+class _ProfileMenuItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final bool isDestructive;
+
+  const _ProfileMenuItem({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDestructive ? const Color(0xFFCC0000) : const Color(0xFF222222);
+
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          splashColor: ColorRes.appColor.withOpacity(0.05),
+          highlightColor: ColorRes.appColor.withOpacity(0.03),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+            child: Row(
               children: [
-                GlobalText(
-                  str: title,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: ColorRes.black,
+                Icon(icon, size: 22, color: color),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: color,
+                    ),
+                  ),
                 ),
-                sizedBoxH(2),
-                GlobalText(
-                  str: subtitle,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  color: ColorRes.grey,
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: Colors.grey.shade400,
                 ),
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios_rounded,
-              size: 16, color: ColorRes.grey),
-        ],
-      ),
-    ),
-  );
+        ),
+        Divider(
+          height: 1,
+          thickness: 1,
+          color: Colors.grey.shade100,
+          indent: 20,
+          endIndent: 20,
+        ),
+      ],
+    );
+  }
 }

@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../app.dart';
 import '../../../../app/routes/app_navigator.dart';
 import '../../../../app/routes/app_route.dart';
 import '../../../../core_functionality/constants/storage_keys.dart';
@@ -55,33 +56,21 @@ class AuthService {
     }
   }
 
-  static Future<void> performLogout() async {
+  static Future<void> performLogout(BuildContext context) async {
     try {
-      final String? token = locator<LocalStorage>().getString(key: StorageKeys.accessToken);
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-
-      // Save data that should persist after logout
       final Map<String, dynamic> persistentData = {
         'email': locator<LocalStorage>().getString(key: StorageKeys.email),
         'password': locator<LocalStorage>().getString(key: StorageKeys.password),
         'remember_me': locator<LocalStorage>().getBool(key: StorageKeys.rememberMe),
       };
 
-      log("===/@ User Token before clearing: $token");
-      log("===/@ Persistent data: $persistentData");
-
-      // Clear all preferences
+      SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.clear();
       await preferences.setBool('isFirstRun', false);
-
-      // Restore persistent data
       await _restorePersistentData(persistentData);
 
-      // Navigate to login screen
-      navigatorKey.currentState?.pushNamedAndRemoveUntil(AppRouteKeys.login, (route) => false);
-
+      if (!context.mounted) return;
+      AppNavigator.pushAndRemoveAll(context, AppRouteKeys.login);
     } catch (e) {
       log("Error during logout: $e");
     }

@@ -10,6 +10,8 @@ import 'features/splash_screen/bloc/splash_bloc.dart';
 import 'features/user/profile/bloc/profile_bloc.dart';
 import 'global/bottom_nav_bar/bloc/bottom_nav_bar_bloc.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -27,6 +29,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AddressBloc()),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         initialRoute: AppRouteKeys.splash,
         onGenerateRoute: AppRouteGenerator.generateRoute,

@@ -295,7 +295,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       filled: true,
                       fillColor: ColorRes.white,
                       readOnly: true,
-                      sufixIcon: GestureDetector(
+                      suffixIcon: GestureDetector(
                         onTap: (){
                           _pickDate(context);
                         },

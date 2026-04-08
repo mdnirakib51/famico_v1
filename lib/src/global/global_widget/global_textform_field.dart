@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/colors_resources.dart';
 import '../constants/input_decoration.dart';
@@ -24,7 +25,7 @@ class GlobalTextFormField extends StatefulWidget {
   final Color? prefixIconColor;
   final Color? suffixIconColor;
   final EdgeInsetsGeometry? contentPadding;
-  final Widget? sufixIcon;
+  final Widget? suffixIcon;
   final bool? filled;
   final Color? fillColor;
   final bool? obscureText;
@@ -41,6 +42,7 @@ class GlobalTextFormField extends StatefulWidget {
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final Function(String)? onFieldSubmitted;
+  final List<TextInputFormatter>? inputFormatters;
   const GlobalTextFormField({
     super.key,
     this.enabled,
@@ -58,7 +60,7 @@ class GlobalTextFormField extends StatefulWidget {
     this.decoration,
     this.prefixIcon,
     this.prefixIconColor,
-    this.sufixIcon,
+    this.suffixIcon,
     this.suffixIconColor,
     this.contentPadding,
     this.fillColor,
@@ -77,6 +79,7 @@ class GlobalTextFormField extends StatefulWidget {
     this.isDense = false,
     this.textInputAction,
     this.onFieldSubmitted,
+    this.inputFormatters,
   });
 
   @override
@@ -156,6 +159,7 @@ class _GlobalTextFormFieldState extends State<GlobalTextFormField> {
           maxLines: widget.maxLines ?? 1,
           textInputAction: widget.textInputAction,
           onFieldSubmitted: widget.onFieldSubmitted,
+          inputFormatters: widget.inputFormatters,
           onChanged: (text)=> widget.onChanged != null ? widget.onChanged!(text) : widget.onChanged,
           decoration: widget.decoration?.copyWith(
             isDense: widget.isDense,
@@ -196,7 +200,7 @@ class _GlobalTextFormFieldState extends State<GlobalTextFormField> {
                 size: 18,
                 color: ColorRes.grey,
               ),
-            ) : widget.sufixIcon,
+            ) : widget.suffixIcon,
           ) ?? inputDecoration.copyWith(
             isDense: widget.isDense,
             hintText: widget.hintText,
@@ -230,7 +234,7 @@ class _GlobalTextFormFieldState extends State<GlobalTextFormField> {
                 isVisible ? Icons.visibility_off : Icons.visibility,
                 size: 20,
               ),
-            ) : widget.sufixIcon,
+            ) : widget.suffixIcon,
           ),
           cursorColor: ColorRes.grey,
           validator: widget.validator ?? (val){

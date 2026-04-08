@@ -1,5 +1,5 @@
 
-import 'package:famico_v1/src/features/user/profile_menu.dart';
+import 'package:famico_v1/src/features/user/profile_menu_screen.dart';
 import 'package:flutter/material.dart';
 import '../../features/auth/login/view/login_screen.dart';
 import '../../features/auth/registration/view/registration_screen.dart';

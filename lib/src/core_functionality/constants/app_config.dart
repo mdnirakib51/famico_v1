@@ -87,11 +87,11 @@ extension AppUrlExtension on AppConfig {
       case AppConfig.logInUrl:
         return '/api/v1/user/auth/login';
       case AppConfig.registrationUrl:
-        return '/api/v1/auth/register';
+        return '/api/v1/user/auth/register';
       case AppConfig.logOutUrl:
         return '/api/v1/logout';
       case AppConfig.forgetPasUrl:
-        return '/api/v1/auth/forget-password';
+        return '/api/v1/user/auth/forgot-password';
       case AppConfig.resetPassUrl:
         return '/api/v1/auth/reset-password';
 

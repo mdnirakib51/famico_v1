@@ -5,7 +5,15 @@ abstract class RegistrationEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-enum RegistrationField { username, phone, email, password, confirmPassword, agreeToTerms}
+enum RegistrationField {
+  username,
+  phone,
+  dialCode,
+  email,
+  password,
+  confirmPassword,
+  agreeToTerms,
+}
 
 class RegistrationFieldChanged extends RegistrationEvent {
   final RegistrationField field;
@@ -19,19 +27,21 @@ class RegistrationFieldChanged extends RegistrationEvent {
 
 class RegistrationSubmitted extends RegistrationEvent {
   final String username;
+  final String dialCode;  // ← new
   final String phone;
   final String email;
   final String password;
 
   RegistrationSubmitted({
     required this.username,
+    required this.dialCode,
     required this.phone,
     required this.email,
     required this.password,
   });
 
   @override
-  List<Object?> get props => [username, phone, email, password];
+  List<Object?> get props => [username, dialCode, phone, email, password];
 }
 
 class RegistrationWithGoogleRequested extends RegistrationEvent {}

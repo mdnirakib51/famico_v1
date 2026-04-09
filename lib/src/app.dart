@@ -1,4 +1,5 @@
 import 'package:famico_v1/src/features/family/family_name/bloc/family_name_bloc.dart';
+import 'package:famico_v1/src/features/user/update_password/bloc/update_password_bloc.dart';
 import 'package:famico_v1/src/features/user/upload_doc/bloc/upload_doc_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => BottomNavBarBloc()),
         BlocProvider(create: (_) => AddressBloc()),
         BlocProvider(create: (_) => FamilyNameBloc()),
+        BlocProvider(create: (_) => UpdatePasswordBloc()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,

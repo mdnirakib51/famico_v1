@@ -1,6 +1,7 @@
 
 import 'package:famico_v1/src/features/address/view/address_screen.dart';
 import 'package:famico_v1/src/features/user/profile_menu_screen.dart';
+import 'package:famico_v1/src/features/user/update_password/view/update_password_screen.dart';
 import 'package:flutter/material.dart';
 import '../../features/auth/login/view/login_screen.dart';
 import '../../features/auth/registration/view/registration_screen.dart';
@@ -35,6 +36,7 @@ class AppRouteKeys {
   static const String profileMenu      = '/profileMenu';
   static const String profile      = '/profile';
   static const String editProfile  = '/edit-profile';
+  static const String changePass  = '/change-password';
 
   // ==================== Profile ====================
   static const String address      = '/address';
@@ -58,6 +60,7 @@ class AppRouteGenerator {
       case AppRouteKeys.profileMenu: return _route(const ProfileMenuScreen(), settings);
       case AppRouteKeys.profile: return _route(const ProfileScreen(), settings);
       case AppRouteKeys.dashboard: return _route(const BottomNavBar(), settings);
+      case AppRouteKeys.changePass: return _route(const UpdatePasswordScreen(), settings);
 
       case AppRouteKeys.address: return _route(const AddressScreen(), settings);
       case AppRouteKeys.familyName: return _route(const FamilyNameScreen(), settings);

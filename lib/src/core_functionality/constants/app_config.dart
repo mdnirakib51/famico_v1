@@ -16,11 +16,11 @@ enum AppConfig {
   logInUrl,
   registrationUrl,
   forgetPasUrl,
-  resetPassUrl,
   logOutUrl,
 
   userProfileUrl,
   updateProfileUrl,
+  updatePassUrl,
   uploadDocUrl,
 
   addressUrl,
@@ -93,8 +93,6 @@ extension AppUrlExtension on AppConfig {
         return '/api/v1/logout';
       case AppConfig.forgetPasUrl:
         return '/api/v1/user/auth/forgot-password';
-      case AppConfig.resetPassUrl:
-        return '/api/v1/auth/reset-password';
 
     /// ==========/@ User Api Url @/==========
       case AppConfig.userProfileUrl:
@@ -103,6 +101,8 @@ extension AppUrlExtension on AppConfig {
         return '/api/v1/user/profile/update';
       case AppConfig.uploadDocUrl:
         return '/api/v1/user/upload-documents';
+      case AppConfig.updatePassUrl:
+        return '/api/v1/user/profile/update/password';
 
     /// ==========/@ Address Api Url @/==========
       case AppConfig.addressUrl:

@@ -68,20 +68,4 @@ class AuthRepository extends ApiHelper {
     throw Exception(response.message);
   }
 
-  Future<AuthModel> reqResetPass({
-    required String? phoneEmail,
-    required String? password
-  }) async {
-
-    Map<String, dynamic> params = {};
-    params['phoneEmail'] = phoneEmail;
-    params['password'] = password;
-
-    final response = await requestHandler.postWrp(AppConfig.resetPassUrl.url, params);
-    if(response.status == '200' || response.status == '201'){
-      return AuthModel.fromJson(response.data ?? {});
-    }
-    throw Exception('Login failed with code ${response.code}: ${response.message}');
-  }
-
 }

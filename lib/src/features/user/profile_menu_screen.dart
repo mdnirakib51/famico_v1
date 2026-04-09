@@ -10,7 +10,6 @@ import '../../global/global_widget/global_progress_hub.dart';
 import '../../global/global_widget/global_sized_box.dart';
 import '../../global/global_widget/global_text.dart';
 import '../auth/data/repositories/auth_service.dart';
-import '../auth/reset_password/view/reset_password_screen.dart';
 import 'profile/bloc/profile_bloc.dart';
 import 'profile/bloc/profile_event.dart';
 import 'profile/bloc/profile_state.dart';
@@ -128,9 +127,7 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                   _ProfileMenuItem(
                     icon: Icons.lock_outline_rounded,
                     title: 'Change Password',
-                    onTap: () {
-                      // AppNavigator.push(context, ResetPasswordScreen());
-                    },
+                    onTap: () => AppNavigator.push(context, AppRouteKeys.changePass),
                   ),
 
                   _ProfileMenuItem(

@@ -69,4 +69,20 @@ class UserRepository extends ApiHelper {
     throw Exception('Response failed with code ${response.code}: ${response.message}');
   }
 
+  Future reqUpdatePass({
+    required String? oldPassword,
+    required String? newPassword
+  }) async {
+
+    Map<String, dynamic> params = {};
+    params['old_password'] = oldPassword;
+    params['new_password'] = newPassword;
+
+    final response = await requestHandler.postWrp(AppConfig.updatePassUrl.url, params);
+    if(response.status == '200' || response.status == '201'){
+      return response.data ?? {};
+    }
+    throw Exception('Login failed with code ${response.code}: ${response.message}');
+  }
+
 }

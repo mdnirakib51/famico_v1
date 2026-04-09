@@ -39,18 +39,38 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   String _selectedDialCode = '+880';
   String? _selectedGender;
 
-  static const List<String> _dialCodes = ['+880', '+91', '+1', '+44', '+61'];
-  static const List<String> _genderOptions = ['Male', 'Female'];
+  static const List<Map<String, String>> _dialCodes = [
+    {'code': '+880', 'flag': '🇧🇩', 'name': 'Bangladesh'},
+    {'code': '+91',  'flag': '🇮🇳', 'name': 'India'},
+    {'code': '+92',  'flag': '🇵🇰', 'name': 'Pakistan'},
+    {'code': '+1',   'flag': '🇺🇸', 'name': 'USA'},
+    {'code': '+44',  'flag': '🇬🇧', 'name': 'UK'},
+    {'code': '+61',  'flag': '🇦🇺', 'name': 'Australia'},
+    {'code': '+971', 'flag': '🇦🇪', 'name': 'UAE'},
+    {'code': '+966', 'flag': '🇸🇦', 'name': 'Saudi Arabia'},
+    {'code': '+60',  'flag': '🇲🇾', 'name': 'Malaysia'},
+    {'code': '+65',  'flag': '🇸🇬', 'name': 'Singapore'},
+  ];
+
+  static const List<String> _genderOptions = ['Male', 'Female', 'Other'];
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.profile.details?.name ?? '');
+    _nameController  = TextEditingController(text: widget.profile.details?.name ?? '');
     _phoneController = TextEditingController(text: widget.profile.phone ?? '');
-    _dobController = TextEditingController(text: widget.profile.details?.dob ?? '');
-    _ageController = TextEditingController(text: widget.profile.details?.age?.toString() ?? '');
+    _dobController   = TextEditingController(text: widget.profile.details?.dob ?? '');
+    _ageController   = TextEditingController(
+        text: widget.profile.details?.age?.toString() ?? '');
 
-    // Pre-fill gender if exists
+    // Pre-fill dial code
+    final existingDial = widget.profile.dialCode;
+    if (existingDial != null &&
+        _dialCodes.any((e) => e['code'] == existingDial)) {
+      _selectedDialCode = existingDial;
+    }
+
+    // Pre-fill gender
     final existingGender = widget.profile.details?.gender;
     if (existingGender != null && _genderOptions.contains(existingGender)) {
       _selectedGender = existingGender;
@@ -69,17 +89,25 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     super.dispose();
   }
 
+  // ── Submit ─────────────────────────────────────────────────────────────────
+
   void _submit(BuildContext context) {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       if (_selectedGender == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select your gender'), backgroundColor: Colors.red),
+          const SnackBar(
+            content: Text('Please select your gender'),
+            backgroundColor: Colors.red,
+          ),
         );
         return;
       }
       context.read<UpdateProfileBloc>().add(
         UpdateProfileSubmitted(
+          username: widget.profile.username ?? '',
+          email: widget.profile.email ?? '',
+
           name: _nameController.text.trim(),
           dialCode: _selectedDialCode,
           phone: _phoneController.text.trim(),
@@ -90,6 +118,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       );
     }
   }
+
+  // ── Date picker ────────────────────────────────────────────────────────────
 
   Future<void> _pickDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -106,7 +136,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
 
     if (picked != null) {
-      // ISO 8601 format — API এর dob format অনুযায়ী
       final formatted =
           '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}T00:00:00.000Z';
       _dobController.text = formatted;
@@ -120,8 +149,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       }
       _ageController.text = age.toString();
 
-      context.read<UpdateProfileBloc>()..add(
-          UpdateProfileFieldChanged(field: UpdateProfileField.dob, value: formatted))
+      context.read<UpdateProfileBloc>()
+        ..add(UpdateProfileFieldChanged(
+            field: UpdateProfileField.dob, value: formatted))
         ..add(UpdateProfileFieldChanged(
             field: UpdateProfileField.age, value: age));
     }
@@ -134,6 +164,60 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       return null;
     }
   }
+
+  // ── Dial code bottom sheet ─────────────────────────────────────────────────
+
+  void _showDialCodePicker() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => ListView(
+        shrinkWrap: true,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: GlobalText(
+              str: 'Select Dial Code',
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: ColorRes.black,
+            ),
+          ),
+          const Divider(height: 1),
+          ..._dialCodes.map(
+                (item) => ListTile(
+              leading: Text(item['flag']!, style: const TextStyle(fontSize: 24)),
+              title: Text(item['name']!,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500)),
+              trailing: Text(item['code']!,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: ColorRes.appColor)),
+              selected: _selectedDialCode == item['code'],
+              selectedTileColor: ColorRes.appColor.withOpacity(0.06),
+              onTap: () {
+                setState(() => _selectedDialCode = item['code']!);
+                context.read<UpdateProfileBloc>().add(
+                  UpdateProfileFieldChanged(
+                    field: UpdateProfileField.dialCode,
+                    value: item['code']!,
+                  ),
+                );
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Build ──────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +232,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           );
           goBack(context);
         }
-
         if (state.status == UpdateProfileStatus.failure &&
             state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -174,7 +257,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ── Avatar ──────────────────────────────────
+
+                    // ── Avatar ───────────────────────────────────────────────
                     Center(
                       child: Stack(
                         children: [
@@ -182,15 +266,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                             radius: 48,
                             backgroundColor:
                             ColorRes.appColor.withOpacity(0.15),
-                            backgroundImage: (widget.profile.details?.image
-                                ?.isNotEmpty ??
+                            backgroundImage:
+                            (widget.profile.details?.image?.isNotEmpty ??
                                 false)
                                 ? NetworkImage(
                                 widget.profile.details!.image!)
                                 : null,
-                            child: (widget.profile.details?.image
-                                ?.isEmpty ??
-                                true)
+                            child:
+                            (widget.profile.details?.image?.isEmpty ?? true)
                                 ? const Icon(Icons.person,
                                 size: 48, color: ColorRes.appColor)
                                 : null,
@@ -216,7 +299,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(28),
 
-                    // ── Username (read-only) ─────────────────────
+                    // ── Username (read-only) ─────────────────────────────────
                     GlobalTextFormField(
                       controller: TextEditingController(
                           text: widget.profile.username ?? ''),
@@ -232,7 +315,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(12),
 
-                    // ── Email (read-only) ────────────────────────
+                    // ── Email (read-only) ────────────────────────────────────
                     GlobalTextFormField(
                       controller: TextEditingController(
                           text: widget.profile.email ?? ''),
@@ -248,7 +331,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(12),
 
-                    // ── Full Name ────────────────────────────────
+                    // ── Full Name ────────────────────────────────────────────
                     GlobalTextFormField(
                       controller: _nameController,
                       focusNode: _nameFocus,
@@ -277,7 +360,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(12),
 
-                    // ── Dial Code + Phone ────────────────────────
+                    // ── Dial Code + Phone ────────────────────────────────────
                     GlobalText(
                       str: 'Phone Number',
                       fontSize: 13,
@@ -288,46 +371,46 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Dial Code Dropdown
-                        Container(
-                          height: 50,
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: ColorRes.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                                color: ColorRes.grey.withOpacity(0.3)),
-                          ),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedDialCode,
-                              items: _dialCodes
-                                  .map((code) => DropdownMenuItem(
-                                value: code,
-                                child: Text(code,
-                                    style: const TextStyle(
-                                        fontSize: 14)),
-                              ))
-                                  .toList(),
-                              onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => _selectedDialCode = val);
-                                  context
-                                      .read<UpdateProfileBloc>()
-                                      .add(UpdateProfileFieldChanged(
-                                    field: UpdateProfileField.dialCode,
-                                    value: val,
-                                  ));
-                                }
-                              },
+                        // ── Dial code button (bottom sheet) ──────────────────
+                        GestureDetector(
+                          onTap: _showDialCodePicker,
+                          child: Container(
+                            height: 52,
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: ColorRes.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                  color: ColorRes.grey.withOpacity(0.3)),
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  _dialCodes.firstWhere(
+                                        (e) => e['code'] == _selectedDialCode,
+                                    orElse: () => _dialCodes.first,
+                                  )['flag']!,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                                sizedBoxW(6),
+                                GlobalText(
+                                  str: _selectedDialCode,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorRes.black,
+                                ),
+                                sizedBoxW(4),
+                                Icon(Icons.keyboard_arrow_down,
+                                    size: 18, color: ColorRes.grey),
+                              ],
                             ),
                           ),
                         ),
 
                         sizedBoxW(8),
 
-                        // Phone Number
+                        // ── Phone number input ────────────────────────────────
                         Expanded(
                           child: GlobalTextFormField(
                             controller: _phoneController,
@@ -344,11 +427,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       field: UpdateProfileField.phone,
                                       value: val),
                                 ),
+                            onFieldSubmitted: (_) =>
+                                FocusScope.of(context).unfocus(),
                             validator: (val) {
                               if (val == null || val.trim().isEmpty) {
                                 return 'Phone is required';
                               }
-                              if (val.length < 10) {
+                              if (val.length < 7) {
                                 return 'Enter a valid phone number';
                               }
                               return null;
@@ -360,7 +445,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(12),
 
-                    // ── Gender Dropdown ──────────────────────────
+                    // ── Gender Dropdown ──────────────────────────────────────
                     GlobalText(
                       str: 'Gender',
                       fontSize: 13,
@@ -382,8 +467,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           value: _selectedGender,
                           hint: const Text(
                             'Select Gender',
-                            style: TextStyle(
-                                color: ColorRes.grey, fontSize: 14),
+                            style:
+                            TextStyle(color: ColorRes.grey, fontSize: 14),
                           ),
                           isExpanded: true,
                           items: _genderOptions
@@ -408,7 +493,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(12),
 
-                    // ── Date of Birth ────────────────────────────
+                    // ── Date of Birth ────────────────────────────────────────
                     GlobalTextFormField(
                       controller: _dobController,
                       titleText: 'Date of Birth',
@@ -432,7 +517,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(12),
 
-                    // ── Age (auto-filled) ────────────────────────
+                    // ── Age (auto-filled from DOB) ────────────────────────────
                     GlobalTextFormField(
                       controller: _ageController,
                       focusNode: _ageFocus,
@@ -441,7 +526,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       decoration: glassInputDecoration,
                       filled: true,
                       fillColor: ColorRes.grey.withOpacity(0.1),
-                      enabled: false, // DOB থেকে auto-calculate হবে
+                      enabled: false, // auto-calculated
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       validator: (val) {
@@ -454,7 +539,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
                     sizedBoxH(32),
 
-                    // ── Submit ───────────────────────────────────
+                    // ── Submit Button ────────────────────────────────────────
                     GlobalButtonWidget(
                       str: 'UPDATE PROFILE',
                       height: 45,

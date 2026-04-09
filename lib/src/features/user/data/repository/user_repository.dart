@@ -23,23 +23,27 @@ class UserRepository extends ApiHelper {
   }
 
   Future<ProfileModel> reqUpdateProfile({
+    required String username,
     required String name,
     required String dialCode,
+    required String email,
     required String phone,
     required String gender,
     required String dob,
     required int age,
   }) async {
     final Map<String, dynamic> params = {
+      'username': username,
       'name': name,
       'dial_code': dialCode,
+      'email': email,
       'phone': phone,
       'gender': gender,
       'dob': dob,
       'age': age,
     };
 
-    final response = await requestHandler.putWrp(AppConfig.updateProfileUrl.url, params);
+    final response = await requestHandler.patchWrp(AppConfig.updateProfileUrl.url, params);
     if (response.code == 200 || response.code == 201) {
       return ProfileModel.fromJson(response.data ?? {});
     }

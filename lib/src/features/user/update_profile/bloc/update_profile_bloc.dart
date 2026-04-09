@@ -46,6 +46,8 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       emit(state.copyWith(status: UpdateProfileStatus.loading));
 
       await _userRepository.reqUpdateProfile(
+        username: event.username,
+        email: event.email,
         name: event.name,
         dialCode: event.dialCode,
         phone: event.phone,

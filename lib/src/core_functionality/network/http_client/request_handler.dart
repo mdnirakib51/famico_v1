@@ -164,7 +164,7 @@ class RequestHandler {
         url: baseUrl ?? mainUrl + url,
         statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
-        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
+        errorDetail: _extractErrorDetail(responseData),
         data: params,
         error: error,
         trace: stackTrace,
@@ -229,7 +229,7 @@ class RequestHandler {
         url: baseUrl ?? mainUrl + url,
         statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
-        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
+        errorDetail: _extractErrorDetail(responseData),
         data: params,
         error: error,
         trace: stackTrace,
@@ -239,6 +239,71 @@ class RequestHandler {
     } catch (error, stackTrace) {
       throw RequestException(
         method: "PUT",
+        url: baseUrl ?? mainUrl + url,
+        message: errorMsg ?? error.toString(),
+        data: params,
+        error: error,
+        trace: stackTrace,
+      );
+    }
+  }
+
+  // ==================== PATCH ====================
+
+  Future<ResponseWrapper> patchWrp(
+      String url,
+      dynamic params, {
+        bool? isFormData = false,
+        String? errorMsg,
+        String? baseUrl,
+        Options? options,
+        Map<String, dynamic>? queryParams,
+      }) async {
+    _initialize();
+    log(" === Start API PATCH Request === ");
+
+    try {
+      final formData = isFormData == true ? FormData.fromMap(params) : params;
+
+      final response = await _dio.patch(
+        baseUrl ?? mainUrl + url,
+        data: formData,
+        queryParameters: queryParams,
+        options: options,
+      );
+
+      _logResponse(
+        method: "PATCH",
+        url: response.realUri.toString(),
+        params: params,
+        statusCode: response.statusCode,
+        responseData: response.data,
+        isFormData: isFormData ?? false,
+      );
+
+      final Map<String, dynamic> responseData = _parseResponseData(response.data);
+      final ResponseWrapper resWrp = ResponseWrapper.fromJson(responseData);
+
+      ApiChecker.checkApi(resWrp.code ?? response.statusCode ?? 0, resWrp.message ?? '');
+      return resWrp;
+    } on DioException catch (error, stackTrace) {
+      final responseData = _extractErrorData(error);
+
+      throw RequestException(
+        method: "PATCH",
+        url: baseUrl ?? mainUrl + url,
+        statusCode: _parseStatusCode(responseData),
+        message: responseData['message'],
+        errorDetail: _extractErrorDetail(responseData),
+        data: params,
+        error: error,
+        trace: stackTrace,
+        res: error.response,
+        errorMsg: error.message,
+      );
+    } catch (error, stackTrace) {
+      throw RequestException(
+        method: "PATCH",
         url: baseUrl ?? mainUrl + url,
         message: errorMsg ?? error.toString(),
         data: params,
@@ -290,7 +355,7 @@ class RequestHandler {
         url: baseUrl ?? mainUrl + url,
         statusCode: _parseStatusCode(responseData),
         message: responseData['message'],
-        errorDetail: _extractErrorDetail(responseData), // ✅ NEW
+        errorDetail: _extractErrorDetail(responseData),
         data: params,
         error: error,
         trace: stackTrace,
@@ -330,7 +395,7 @@ class RequestHandler {
     };
   }
 
-  /// ✅ Parse status code - handles both int and String ("404" or 404)
+  /// Parse status code - handles both int and String ("404" or 404)
   int? _parseStatusCode(Map<String, dynamic> data) {
     final raw = data['status'] ?? data['code'];
     if (raw is int) return raw;
@@ -338,7 +403,7 @@ class RequestHandler {
     return null;
   }
 
-  /// ✅ Extract errorDetail from error object
+  /// Extract errorDetail from error object
   /// Handles: { "error": { "error": "Invalid credentials" } }
   String? _extractErrorDetail(Map<String, dynamic> data) {
     final errorField = data['error'];

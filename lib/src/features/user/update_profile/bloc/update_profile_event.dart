@@ -20,6 +20,8 @@ class UpdateProfileFieldChanged extends UpdateProfileEvent {
 }
 
 class UpdateProfileSubmitted extends UpdateProfileEvent {
+  final String username;
+  final String email;
   final String name;
   final String dialCode;
   final String phone;
@@ -28,6 +30,8 @@ class UpdateProfileSubmitted extends UpdateProfileEvent {
   final int age;
 
   const UpdateProfileSubmitted({
+    required this.username,
+    required this.email,
     required this.name,
     required this.dialCode,
     required this.phone,
@@ -37,5 +41,5 @@ class UpdateProfileSubmitted extends UpdateProfileEvent {
   });
 
   @override
-  List<Object?> get props => [name, dialCode, phone, gender, dob, age];
+  List<Object?> get props => [username, email, name, dialCode, phone, gender, dob, age];
 }

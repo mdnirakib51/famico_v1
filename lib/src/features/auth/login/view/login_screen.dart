@@ -39,8 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController(text: "md.rakib3248@gmail.com");
-    _passwordController = TextEditingController(text: "Hello@123");
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
   }
 
   @override
@@ -56,10 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state.email.isNotEmpty && _emailController.text.isEmpty) {
+        if (state.status == LoginStatus.credentialsLoaded) {
           _emailController.text = state.email;
-        }
-        if (state.password.isNotEmpty && _passwordController.text.isEmpty) {
           _passwordController.text = state.password;
         }
 

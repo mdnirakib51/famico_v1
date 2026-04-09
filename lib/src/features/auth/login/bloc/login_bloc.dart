@@ -21,6 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       final credentials = AuthService.loadSavedCredentials();
       emit(state.copyWith(
+        status: LoginStatus.credentialsLoaded,
         email: credentials['email'] ?? '',
         password: credentials['password'] ?? '',
         rememberMe: credentials['remember_me'] ?? false,

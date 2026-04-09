@@ -24,29 +24,26 @@ class UserRepository extends ApiHelper {
 
   Future<ProfileModel> reqUpdateProfile({
     required String name,
+    required String dialCode,
     required String phone,
-    String? email,
-    String? dob,
-    int? age,
-    int? presentAddressId,
-    int? permanentAddressId,
+    required String gender,
+    required String dob,
+    required int age,
   }) async {
     final Map<String, dynamic> params = {
       'name': name,
+      'dial_code': dialCode,
       'phone': phone,
-      'email': ?email,
-      'dob': ?dob,
-      'age': ?age,
-      'presentAddressId': ?presentAddressId,
-      'permanentAddressId': ?permanentAddressId,
-      'verificationStatus': true,
+      'gender': gender,
+      'dob': dob,
+      'age': age,
     };
 
     final response = await requestHandler.putWrp(AppConfig.updateProfileUrl.url, params);
     if (response.code == 200 || response.code == 201) {
       return ProfileModel.fromJson(response.data ?? {});
     }
-    throw Exception('Update profile failed with code ${response.code}: ${response.message}');
+    throw Exception(response.message);
   }
 
   /// =/@ Product List Method..

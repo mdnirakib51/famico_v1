@@ -5,8 +5,9 @@ enum UpdateProfileStatus { initial, loading, success, failure }
 class UpdateProfileState extends Equatable {
   final UpdateProfileStatus status;
   final String name;
+  final String dialCode;
   final String phone;
-  final String email;
+  final String gender;
   final String dob;
   final int age;
   final String? errorMessage;
@@ -14,8 +15,9 @@ class UpdateProfileState extends Equatable {
   const UpdateProfileState({
     this.status = UpdateProfileStatus.initial,
     this.name = '',
+    this.dialCode = '+880',
     this.phone = '',
-    this.email = '',
+    this.gender = '',
     this.dob = '',
     this.age = 0,
     this.errorMessage,
@@ -24,8 +26,9 @@ class UpdateProfileState extends Equatable {
   UpdateProfileState copyWith({
     UpdateProfileStatus? status,
     String? name,
+    String? dialCode,
     String? phone,
-    String? email,
+    String? gender,
     String? dob,
     int? age,
     String? errorMessage,
@@ -33,8 +36,9 @@ class UpdateProfileState extends Equatable {
     return UpdateProfileState(
       status: status ?? this.status,
       name: name ?? this.name,
+      dialCode: dialCode ?? this.dialCode,
       phone: phone ?? this.phone,
-      email: email ?? this.email,
+      gender: gender ?? this.gender,
       dob: dob ?? this.dob,
       age: age ?? this.age,
       errorMessage: errorMessage,
@@ -42,5 +46,7 @@ class UpdateProfileState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, name, phone, email, dob, age, errorMessage];
+  List<Object?> get props => [
+    status, name, dialCode, phone, gender, dob, age, errorMessage,
+  ];
 }

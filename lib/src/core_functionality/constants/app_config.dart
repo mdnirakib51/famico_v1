@@ -99,7 +99,7 @@ extension AppUrlExtension on AppConfig {
       case AppConfig.userProfileUrl:
         return '/api/v1/user/profile';
       case AppConfig.updateProfileUrl:
-        return '/api/v1/user/update-profile';
+        return '/api/v1/user/profile/update';
       case AppConfig.uploadDocUrl:
         return '/api/v1/user/upload-documents';
 

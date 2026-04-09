@@ -20,11 +20,14 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       case UpdateProfileField.name:
         emit(state.copyWith(name: event.value as String));
         break;
+      case UpdateProfileField.dialCode:
+        emit(state.copyWith(dialCode: event.value as String));
+        break;
       case UpdateProfileField.phone:
         emit(state.copyWith(phone: event.value as String));
         break;
-      case UpdateProfileField.email:
-        emit(state.copyWith(email: event.value as String));
+      case UpdateProfileField.gender:
+        emit(state.copyWith(gender: event.value as String));
         break;
       case UpdateProfileField.dob:
         emit(state.copyWith(dob: event.value as String));
@@ -44,15 +47,16 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
 
       await _userRepository.reqUpdateProfile(
         name: event.name,
+        dialCode: event.dialCode,
         phone: event.phone,
-        email: event.email,
+        gender: event.gender,
         dob: event.dob,
         age: event.age,
       );
 
       emit(state.copyWith(status: UpdateProfileStatus.success));
     } catch (e) {
-      log('Update profile error: ${e.toString()}');
+      log('UpdateProfileBloc - Submit error: $e');
       emit(state.copyWith(
         status: UpdateProfileStatus.failure,
         errorMessage: e.toString(),

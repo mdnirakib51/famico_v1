@@ -24,6 +24,7 @@ enum AppConfig {
   uploadDocUrl,
 
   addressUrl,
+  familyNameUrl,
 }
 
 extension AppUrlExtension on AppConfig {
@@ -106,6 +107,9 @@ extension AppUrlExtension on AppConfig {
     /// ==========/@ Address Api Url @/==========
       case AppConfig.addressUrl:
         return '/api/v1/user/address';
+
+      case AppConfig.familyNameUrl:
+        return '/api/v1/user/family/name';
     }
   }
 }

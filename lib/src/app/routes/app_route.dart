@@ -4,6 +4,7 @@ import 'package:famico_v1/src/features/user/profile_menu_screen.dart';
 import 'package:flutter/material.dart';
 import '../../features/auth/login/view/login_screen.dart';
 import '../../features/auth/registration/view/registration_screen.dart';
+import '../../features/family/family_name/view/family_name_screen.dart';
 import '../../features/on_boarding_screen/view/on_boarding_screen.dart';
 import '../../features/splash_screen/view/splash_screen.dart';
 import '../../features/user/profile/view/profile_screen.dart';
@@ -37,6 +38,7 @@ class AppRouteKeys {
 
   // ==================== Profile ====================
   static const String address      = '/address';
+  static const String familyName      = '/family-name';
 
 // Add more routes here...
 }
@@ -58,6 +60,7 @@ class AppRouteGenerator {
       case AppRouteKeys.dashboard: return _route(const BottomNavBar(), settings);
 
       case AppRouteKeys.address: return _route(const AddressScreen(), settings);
+      case AppRouteKeys.familyName: return _route(const FamilyNameScreen(), settings);
 
       default: return _route(const _NotFoundScreen(), settings);
     }

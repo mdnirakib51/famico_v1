@@ -25,10 +25,10 @@ class AddressRepository extends ApiHelper {
       'state': state,
       'zip': zip,
       'country': country,
-      'addressType': addressType,
+      'address_type': addressType,
     };
 
-    final response = await requestHandler.postWrp('${AppConfig.addressUrl.url}/add', params);
+    final response = await requestHandler.postWrp(AppConfig.addressUrl.url, params);
     if (response.code == 200 || response.code == 201) {
       return response.data ?? {};
     }
@@ -36,7 +36,7 @@ class AddressRepository extends ApiHelper {
   }
 
   Future<AddressListModel> getAllAddress() async {
-    final response = await requestHandler.getWrp('${AppConfig.addressUrl.url}/all');
+    final response = await requestHandler.getWrp(AppConfig.addressUrl.url);
     if (response.code == 200 || response.code == 201) {
       return AddressListModel.fromJson(response.data ?? {});
     }
@@ -53,16 +53,16 @@ class AddressRepository extends ApiHelper {
     required String addressType,
   }) async {
     final Map<String, dynamic> params = {
+      'id': addressId,
       'street': street,
       'city': city,
       'state': state,
       'zip': zip,
-      'country': country,
-      'addressType': addressType,
+      'country': country
     };
 
     final response = await requestHandler.putWrp(
-      '${AppConfig.addressUrl.url}/update/$addressId',
+      AppConfig.addressUrl.url,
       params,
     );
     if (response.code == 200 || response.code == 201) {
@@ -73,7 +73,7 @@ class AddressRepository extends ApiHelper {
 
   Future reqRemoveAddress({required String addressId}) async {
     final response = await requestHandler.deleteWrp(
-      '${AppConfig.addressUrl.url}/delete/$addressId',
+      '${AppConfig.addressUrl.url}/$addressId',
     );
     if (response.code == 200 || response.code == 201) {
       return response.data ?? {};

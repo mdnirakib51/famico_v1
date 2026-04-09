@@ -1,67 +1,75 @@
 class AddressListModel {
-  List<Address>? address;
+  List<Addresses>? addresses;
 
-  AddressListModel({this.address});
+  AddressListModel({this.addresses});
 
   AddressListModel.fromJson(Map<String, dynamic> json) {
-    if (json['address'] != null) {
-      address = <Address>[];
-      json['address'].forEach((v) {
-        address!.add(Address.fromJson(v));
+    if (json['addresses'] != null) {
+      addresses = <Addresses>[];
+      json['addresses'].forEach((v) {
+        addresses!.add(Addresses.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (address != null) {
-      data['address'] = address!.map((v) => v.toJson()).toList();
+    if (addresses != null) {
+      data['addresses'] = addresses!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class Address {
-  int? id;
+class Addresses {
+  String? id;
+  String? userId;
   String? street;
-  String? zip;
   String? city;
   String? state;
+  String? zip;
   String? country;
   String? addressType;
-  int? createdByUserId;
+  String? createdAt;
+  String? updatedAt;
 
-  Address(
+  Addresses(
       {this.id,
+        this.userId,
         this.street,
-        this.zip,
         this.city,
         this.state,
+        this.zip,
         this.country,
         this.addressType,
-        this.createdByUserId});
+        this.createdAt,
+        this.updatedAt});
 
-  Address.fromJson(Map<String, dynamic> json) {
+  Addresses.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    userId = json['user_id'];
     street = json['street'];
-    zip = json['zip'];
     city = json['city'];
     state = json['state'];
+    zip = json['zip'];
     country = json['country'];
-    addressType = json['addressType'];
-    createdByUserId = json['createdByUserId'];
+    addressType = json['address_type'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['user_id'] = userId;
     data['street'] = street;
-    data['zip'] = zip;
     data['city'] = city;
     data['state'] = state;
+    data['zip'] = zip;
     data['country'] = country;
-    data['addressType'] = addressType;
-    data['createdByUserId'] = createdByUserId;
+    data['address_type'] = addressType;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

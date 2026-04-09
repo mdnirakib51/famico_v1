@@ -15,13 +15,16 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   }
 
   // ── Fetch ──────────────────────────────────────────────────────────────────
-  Future<void> _onFetch(FetchAddressList event, Emitter<AddressState> emit) async {
+  Future<void> _onFetch(
+      FetchAddressList event,
+      Emitter<AddressState> emit,
+      ) async {
     try {
       emit(state.copyWith(status: AddressStatus.loading));
       final result = await _repository.getAllAddress();
       emit(state.copyWith(
         status: AddressStatus.success,
-        addresses: result.address ?? [],
+        addresses: result.addresses ?? [],
       ));
     } catch (e) {
       log('Fetch address error: $e');
@@ -33,7 +36,10 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   }
 
   // ── Create ─────────────────────────────────────────────────────────────────
-  Future<void> _onCreate(AddressCreateSubmitted event, Emitter<AddressState> emit) async {
+  Future<void> _onCreate(
+      AddressCreateSubmitted event,
+      Emitter<AddressState> emit,
+      ) async {
     try {
       emit(state.copyWith(mutationStatus: AddressMutationStatus.loading));
       await _repository.reqCreateAddress(
@@ -45,7 +51,6 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         addressType: event.addressType,
       );
       emit(state.copyWith(mutationStatus: AddressMutationStatus.success));
-      // Refresh list
       add(FetchAddressList());
     } catch (e) {
       log('Create address error: $e');
@@ -57,11 +62,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   }
 
   // ── Edit ───────────────────────────────────────────────────────────────────
-  Future<void> _onEdit(AddressEditSubmitted event, Emitter<AddressState> emit) async {
+  Future<void> _onEdit(
+      AddressEditSubmitted event,
+      Emitter<AddressState> emit,
+      ) async {
     try {
       emit(state.copyWith(mutationStatus: AddressMutationStatus.loading));
       await _repository.reqEditAddress(
-        addressId: event.id.toString(),
+        addressId: event.id,
         street: event.street,
         city: event.city,
         state: event.state,
@@ -70,7 +78,6 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         addressType: event.addressType,
       );
       emit(state.copyWith(mutationStatus: AddressMutationStatus.success));
-      // Refresh list
       add(FetchAddressList());
     } catch (e) {
       log('Edit address error: $e');
@@ -82,12 +89,14 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   }
 
   // ── Delete ─────────────────────────────────────────────────────────────────
-  Future<void> _onDelete(AddressDeleteRequested event, Emitter<AddressState> emit) async {
+  Future<void> _onDelete(
+      AddressDeleteRequested event,
+      Emitter<AddressState> emit,
+      ) async {
     try {
       emit(state.copyWith(mutationStatus: AddressMutationStatus.loading));
-      await _repository.reqRemoveAddress(addressId: event.id.toString());
+      await _repository.reqRemoveAddress(addressId: event.id);
       emit(state.copyWith(mutationStatus: AddressMutationStatus.success));
-      // Refresh list
       add(FetchAddressList());
     } catch (e) {
       log('Delete address error: $e');

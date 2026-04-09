@@ -32,7 +32,7 @@ class AddressCreateSubmitted extends AddressEvent {
 
 // ── Edit ──────────────────────────────────────────────────────────────────────
 class AddressEditSubmitted extends AddressEvent {
-  final int id;
+  final String id;
   final String street;
   final String city;
   final String state;
@@ -56,7 +56,7 @@ class AddressEditSubmitted extends AddressEvent {
 
 // ── Delete ────────────────────────────────────────────────────────────────────
 class AddressDeleteRequested extends AddressEvent {
-  final int id;
+  final String id; // String — matches Addresses.id (String?)
   AddressDeleteRequested(this.id);
 
   @override

@@ -30,7 +30,8 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AddressBloc, AddressState>(
-      listenWhen: (prev, curr) => curr.mutationStatus != prev.mutationStatus,
+      listenWhen: (prev, curr) =>
+      curr.mutationStatus != prev.mutationStatus,
       listener: (context, state) {
         if (state.mutationStatus == AddressMutationStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -51,28 +52,28 @@ class _AddressScreenState extends State<AddressScreen> {
         }
       },
       builder: (context, state) {
-        final isMutating = state.mutationStatus == AddressMutationStatus.loading;
+        final isMutating =
+            state.mutationStatus == AddressMutationStatus.loading;
 
         return Scaffold(
           backgroundColor: ColorRes.appBackColor,
           appBar: GlobalAppBar(
             title: 'My Addresses',
-            isBackIc: false,
             actions: [
               GestureDetector(
                 onTap: () => _showAddressSheet(context),
                 child: Container(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     border: Border.all(width: 1, color: ColorRes.white),
-                    borderRadius: BorderRadius.circular(5)
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Row(
                     children: [
                       const Icon(Icons.add, color: ColorRes.white, size: 14),
                       sizedBoxW(3),
                       GlobalText(
-                        str: "Add Address",
+                        str: 'Add Address',
                         color: ColorRes.white,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -85,10 +86,12 @@ class _AddressScreenState extends State<AddressScreen> {
             ],
           ),
           body: ProgressHUD(
-            inAsyncCall: state.status == AddressStatus.loading || isMutating,
+            inAsyncCall:
+            state.status == AddressStatus.loading || isMutating,
             child: state.status == AddressStatus.failure
                 ? _buildError(context, state.errorMessage)
-                : state.addresses.isEmpty && state.status == AddressStatus.success
+                : state.addresses.isEmpty &&
+                state.status == AddressStatus.success
                 ? _buildEmpty(context)
                 : _buildList(context, state.addresses),
           ),
@@ -98,7 +101,7 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   // ── Address List ───────────────────────────────────────────────────────────
-  Widget _buildList(BuildContext context, List<Address> addresses) {
+  Widget _buildList(BuildContext context, List<Addresses> addresses) {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: addresses.length,
@@ -120,7 +123,8 @@ class _AddressScreenState extends State<AddressScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.location_off_outlined, size: 64, color: ColorRes.grey.withOpacity(0.5)),
+          Icon(Icons.location_off_outlined,
+              size: 64, color: ColorRes.grey.withOpacity(0.5)),
           sizedBoxH(16),
           const GlobalText(
             str: 'No addresses found',
@@ -159,7 +163,8 @@ class _AddressScreenState extends State<AddressScreen> {
           ),
           sizedBoxH(20),
           ElevatedButton.icon(
-            onPressed: () => context.read<AddressBloc>().add(FetchAddressList()),
+            onPressed: () =>
+                context.read<AddressBloc>().add(FetchAddressList()),
             icon: const Icon(Icons.refresh),
             label: const Text('Retry'),
             style: ElevatedButton.styleFrom(
@@ -173,11 +178,12 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   // ── Delete Confirm Dialog ──────────────────────────────────────────────────
-  void _confirmDelete(BuildContext context, Address address) {
+  void _confirmDelete(BuildContext context, Addresses address) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: const Text('Delete Address'),
         content: Text(
           'Are you sure you want to delete "${address.street}, ${address.city}"?',
@@ -190,12 +196,14 @@ class _AddressScreenState extends State<AddressScreen> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              context
-                  .read<AddressBloc>()
-                  .add(AddressDeleteRequested(address.id!));
+              if (address.id != null) {
+                context.read<AddressBloc>().add(AddressDeleteRequested(address.id!));
+              }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+            style:
+            ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Delete',
+                style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -203,7 +211,7 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   // ── Add / Edit Bottom Sheet ────────────────────────────────────────────────
-  void _showAddressSheet(BuildContext context, {Address? address}) {
+  void _showAddressSheet(BuildContext context, {Addresses? address}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -218,7 +226,7 @@ class _AddressScreenState extends State<AddressScreen> {
 
 // ─── Address Card ─────────────────────────────────────────────────────────────
 class _AddressCard extends StatelessWidget {
-  final Address address;
+  final Addresses address; // ← Addresses (not Address)
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -247,7 +255,9 @@ class _AddressCard extends StatelessWidget {
         children: [
           // ── Header ──────────────────────────────────────────────────────
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            width: double.infinity,
+            padding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             decoration: BoxDecoration(
               color: ColorRes.appColor.withOpacity(0.08),
               borderRadius: const BorderRadius.only(
@@ -268,14 +278,12 @@ class _AddressCard extends StatelessWidget {
                     color: ColorRes.appColor,
                   ),
                 ),
-                // Edit
                 GestureDetector(
                   onTap: onEdit,
                   child: const Icon(Icons.edit_outlined,
                       size: 18, color: ColorRes.appColor),
                 ),
                 sizedBoxW(12),
-                // Delete
                 GestureDetector(
                   onTap: onDelete,
                   child: const Icon(Icons.delete_outline,
@@ -294,7 +302,8 @@ class _AddressCard extends StatelessWidget {
                 _row(Icons.location_city_outlined, 'City', address.city),
                 _row(Icons.map_outlined, 'State', address.state),
                 _row(Icons.flag_outlined, 'Country', address.country),
-                _row(Icons.local_post_office_outlined, 'ZIP', address.zip),
+                _row(
+                    Icons.local_post_office_outlined, 'ZIP', address.zip),
               ],
             ),
           ),
@@ -343,7 +352,7 @@ class _AddressCard extends StatelessWidget {
 
 // ─── Add / Edit Form Bottom Sheet ─────────────────────────────────────────────
 class _AddressFormSheet extends StatefulWidget {
-  final Address? address; // null = create, non-null = edit
+  final Addresses? address; // null = create, non-null = edit
 
   const _AddressFormSheet({this.address});
 
@@ -361,7 +370,12 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
   late TextEditingController _countryCtrl;
 
   String _addressType = 'Present';
-  final List<String> _addressTypes = ['Present', 'Permanent', 'Work', 'Other'];
+  final List<String> _addressTypes = [
+    'Present',
+    'Permanent',
+    'Work',
+    'Other',
+  ];
 
   bool get _isEdit => widget.address != null;
 
@@ -374,7 +388,13 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
     _stateCtrl   = TextEditingController(text: a?.state ?? '');
     _zipCtrl     = TextEditingController(text: a?.zip ?? '');
     _countryCtrl = TextEditingController(text: a?.country ?? '');
-    _addressType = a?.addressType ?? 'Present';
+
+    // Pre-fill address type (capitalise first letter to match dropdown)
+    if (a?.addressType != null) {
+      final type = _capitalize(a!.addressType!);
+      _addressType =
+      _addressTypes.contains(type) ? type : _addressTypes.first;
+    }
   }
 
   @override
@@ -387,13 +407,16 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
     super.dispose();
   }
 
+  String _capitalize(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1).toLowerCase();
+
   void _submit() {
     FocusScope.of(context).unfocus();
     if (!_formKey.currentState!.validate()) return;
 
     if (_isEdit) {
       context.read<AddressBloc>().add(AddressEditSubmitted(
-        id: widget.address!.id!,
+        id: widget.address?.id ?? '',
         street: _streetCtrl.text.trim(),
         city: _cityCtrl.text.trim(),
         state: _stateCtrl.text.trim(),
@@ -464,9 +487,11 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
                   fillColor: ColorRes.white,
                 ),
                 items: _addressTypes
-                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                    .map((t) =>
+                    DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
-                onChanged: (val) => setState(() => _addressType = val!),
+                onChanged: (val) =>
+                    setState(() => _addressType = val!),
               ),
 
               sizedBoxH(12),
@@ -480,8 +505,9 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
                 filled: true,
                 fillColor: ColorRes.white,
                 textInputAction: TextInputAction.next,
-                validator: (v) =>
-                v == null || v.trim().isEmpty ? 'Street is required' : null,
+                validator: (v) => v == null || v.trim().isEmpty
+                    ? 'Street is required'
+                    : null,
               ),
 
               sizedBoxH(12),
@@ -495,8 +521,9 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
                 filled: true,
                 fillColor: ColorRes.white,
                 textInputAction: TextInputAction.next,
-                validator: (v) =>
-                v == null || v.trim().isEmpty ? 'City is required' : null,
+                validator: (v) => v == null || v.trim().isEmpty
+                    ? 'City is required'
+                    : null,
               ),
 
               sizedBoxH(12),
@@ -514,9 +541,8 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
                       filled: true,
                       fillColor: ColorRes.white,
                       textInputAction: TextInputAction.next,
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Required'
-                          : null,
+                      validator: (v) =>
+                      v == null || v.trim().isEmpty ? 'Required' : null,
                     ),
                   ),
                   sizedBoxW(10),
@@ -530,9 +556,8 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
                       fillColor: ColorRes.white,
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.next,
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Required'
-                          : null,
+                      validator: (v) =>
+                      v == null || v.trim().isEmpty ? 'Required' : null,
                     ),
                   ),
                 ],
@@ -550,8 +575,9 @@ class _AddressFormSheetState extends State<_AddressFormSheet> {
                 fillColor: ColorRes.white,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _submit(),
-                validator: (v) =>
-                v == null || v.trim().isEmpty ? 'Country is required' : null,
+                validator: (v) => v == null || v.trim().isEmpty
+                    ? 'Country is required'
+                    : null,
               ),
 
               sizedBoxH(24),

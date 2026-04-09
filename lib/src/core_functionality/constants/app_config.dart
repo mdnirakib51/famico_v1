@@ -105,7 +105,7 @@ extension AppUrlExtension on AppConfig {
 
     /// ==========/@ Address Api Url @/==========
       case AppConfig.addressUrl:
-        return '/api/v1/address';
+        return '/api/v1/user/address';
     }
   }
 }

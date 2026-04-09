@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../data/model/address_list_model.dart';
 
 enum AddressStatus { initial, loading, success, failure }
@@ -8,7 +7,7 @@ enum AddressMutationStatus { idle, loading, success, failure }
 class AddressState extends Equatable {
   final AddressStatus status;
   final AddressMutationStatus mutationStatus;
-  final List<Address> addresses;
+  final List<Addresses> addresses; // ← Addresses (not Address)
   final String? errorMessage;
   final String? mutationError;
 
@@ -23,7 +22,7 @@ class AddressState extends Equatable {
   AddressState copyWith({
     AddressStatus? status,
     AddressMutationStatus? mutationStatus,
-    List<Address>? addresses,
+    List<Addresses>? addresses,
     String? errorMessage,
     String? mutationError,
   }) {

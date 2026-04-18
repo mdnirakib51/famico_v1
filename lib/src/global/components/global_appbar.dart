@@ -1,7 +1,6 @@
+
 import 'package:famico_v1/src/app/routes/app_navigator.dart';
-import 'package:famico_v1/src/features/auth/data/repositories/auth_service.dart';
 import 'package:flutter/material.dart';
-import '../../app/routes/app_route.dart';
 import '../constants/colors_resources.dart';
 import '../global_widget/global_text.dart';
 

@@ -7,7 +7,7 @@ class FamilyNameModel {
     if (json['families'] != null) {
       families = <Families>[];
       json['families'].forEach((v) {
-        families!.add(new Families.fromJson(v));
+        families!.add(Families.fromJson(v));
       });
     }
   }

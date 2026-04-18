@@ -42,11 +42,6 @@ class FamilyNameBloc extends Bloc<FamilyNameEvent, FamilyNameState> {
       emit(state.copyWith(mutationStatus: FamilyNameMutationStatus.loading));
       await _repository.reqCreateFamilyName(
         familyName: event.familyName,
-        city: '',
-        state: '',
-        zip: '',
-        country: '',
-        addressType: '',
       );
       emit(state.copyWith(mutationStatus: FamilyNameMutationStatus.success));
       add(FetchFamilyNameList());

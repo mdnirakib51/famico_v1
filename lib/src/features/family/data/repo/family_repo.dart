@@ -4,6 +4,8 @@ import '../../../../core_functionality/network/http_client/request_handler.dart'
 import '../../../../core_functionality/storage/storage_controller.dart';
 import '../../../../initializer.dart';
 import '../model/family_name_model.dart';
+import '../model/relation_model.dart';
+import '../model/relation_ship_model.dart';
 
 class FamilyRepository extends ApiHelper {
   FamilyRepository() : super(
@@ -13,11 +15,6 @@ class FamilyRepository extends ApiHelper {
 
   Future reqCreateFamilyName({
     required String familyName,
-    required String city,
-    required String state,
-    required String zip,
-    required String country,
-    required String addressType,
   }) async {
     final Map<String, dynamic> params = {
       'family_name': familyName,
@@ -34,6 +31,30 @@ class FamilyRepository extends ApiHelper {
     final response = await requestHandler.getWrp(AppConfig.familyNameUrl.url);
     if (response.code == 200 || response.code == 201) {
       return FamilyNameModel.fromJson(response.data ?? {});
+    }
+    throw Exception(response.message);
+  }
+
+  Future<RelationModel> getFamilyMember() async {
+    final response = await requestHandler.getWrp(AppConfig.familyMemberUrl.url);
+    if (response.code == 200 || response.code == 201) {
+      return RelationModel.fromJson(response.data ?? {});
+    }
+    throw Exception(response.message);
+  }
+
+  Future<RelationShipModel> getRelationShip() async {
+    final response = await requestHandler.getWrp(AppConfig.relationShipUrl.url);
+    if (response.code == 200 || response.code == 201) {
+      return RelationShipModel.fromJson(response.data ?? {});
+    }
+    throw Exception(response.message);
+  }
+
+  Future<RelationShipModel> getRelation() async {
+    final response = await requestHandler.getWrp(AppConfig.familyNameUrl.url);
+    if (response.code == 200 || response.code == 201) {
+      return RelationShipModel.fromJson(response.data ?? {});
     }
     throw Exception(response.message);
   }

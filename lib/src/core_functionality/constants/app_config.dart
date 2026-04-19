@@ -28,6 +28,7 @@ enum AppConfig {
   relationShipUrl,
   relationUrl,
   familyMemberUrl,
+  makeRelationshipUrl,
 }
 
 extension AppUrlExtension on AppConfig {
@@ -120,6 +121,8 @@ extension AppUrlExtension on AppConfig {
 
       case AppConfig.familyMemberUrl:
         return '/api/v1/user/family/member';
+      case AppConfig.makeRelationshipUrl:
+        return '/api/v1/user/family/member/make-relationship';
     }
   }
 }

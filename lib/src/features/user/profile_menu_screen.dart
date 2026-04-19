@@ -125,6 +125,12 @@ class _ProfileMenuScreenState extends State<ProfileMenuScreen> {
                   ),
 
                   _ProfileMenuItem(
+                    icon: Icons.group_outlined,
+                    title: 'Family Members',
+                    onTap: () => AppNavigator.push(context, AppRouteKeys.familyMembers),
+                  ),
+
+                  _ProfileMenuItem(
                     icon: Icons.lock_outline_rounded,
                     title: 'Change Password',
                     onTap: () => AppNavigator.push(context, AppRouteKeys.changePass),

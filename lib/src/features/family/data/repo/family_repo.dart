@@ -1,3 +1,4 @@
+
 import '../../../../core_functionality/constants/api_helper.dart';
 import '../../../../core_functionality/constants/app_config.dart';
 import '../../../../core_functionality/network/http_client/request_handler.dart';
@@ -5,6 +6,7 @@ import '../../../../core_functionality/storage/storage_controller.dart';
 import '../../../../initializer.dart';
 import '../model/family_member_model.dart';
 import '../model/family_name_model.dart';
+import '../model/family_tree_model.dart';
 import '../model/relation_ship_model.dart';
 
 class FamilyRepository extends ApiHelper {
@@ -16,10 +18,7 @@ class FamilyRepository extends ApiHelper {
 
   // ── Family Name ────────────────────────────────────────────────────────────
   Future reqCreateFamilyName({required String familyName}) async {
-    final response = await requestHandler.postWrp(
-      AppConfig.familyNameUrl.url,
-      {'family_name': familyName},
-    );
+    final response = await requestHandler.postWrp(AppConfig.familyNameUrl.url, {'family_name': familyName});
     if (response.code == 200 || response.code == 201) return response.data ?? {};
     throw Exception(response.message);
   }
@@ -56,8 +55,8 @@ class FamilyRepository extends ApiHelper {
       'name': name,
       'dob': dob,
       'phone': phone,
-      if (email != null) 'email': email,
-      if (status != null) 'status': status,
+      'email': ?email,
+      'status': ?status,
       'present_address': {
         'street': presentStreet,
         'city': presentCity,
@@ -74,16 +73,13 @@ class FamilyRepository extends ApiHelper {
       },
     };
 
-    final response = await requestHandler.postWrp(
-        AppConfig.familyMemberUrl.url, params);
+    final response = await requestHandler.postWrp(AppConfig.familyMemberUrl.url, params);
     if (response.code == 200 || response.code == 201) return response.data ?? {};
     throw Exception(response.message);
   }
 
   Future<FamilyMemberModel> getFamilyMember({int? familyId}) async {
-    final url = familyId != null
-        ? '${AppConfig.familyMemberUrl.url}?family_id=$familyId'
-        : AppConfig.familyMemberUrl.url;
+    final url = familyId != null ? '${AppConfig.familyMemberUrl.url}?family_id=$familyId' : AppConfig.familyMemberUrl.url;
     final response = await requestHandler.getWrp(url);
     if (response.code == 200 || response.code == 201) {
       return FamilyMemberModel.fromJson(response.data ?? {});
@@ -95,8 +91,7 @@ class FamilyRepository extends ApiHelper {
 
   /// Relation type list — sibling, parent, spouse etc. → relation_id
   Future<RelationShipModel> getRelationShip() async {
-    final response =
-    await requestHandler.getWrp(AppConfig.relationShipUrl.url);
+    final response = await requestHandler.getWrp(AppConfig.relationShipUrl.url);
     if (response.code == 200 || response.code == 201) {
       return RelationShipModel.fromJson(response.data ?? {});
     }
@@ -105,8 +100,7 @@ class FamilyRepository extends ApiHelper {
 
   /// Relation nature list — direct/indirect etc. → relationship_id
   Future<RelationShipModel> getRelation() async {
-    final response =
-    await requestHandler.getWrp(AppConfig.relationUrl.url);
+    final response = await requestHandler.getWrp(AppConfig.relationUrl.url);
     if (response.code == 200 || response.code == 201) {
       return RelationShipModel.fromJson(response.data ?? {});
     }
@@ -131,6 +125,14 @@ class FamilyRepository extends ApiHelper {
 
     final response = await requestHandler.postWrp(AppConfig.makeRelationshipUrl.url, params);
     if (response.code == 200 || response.code == 201) return response.data ?? {};
+    throw Exception(response.message);
+  }
+
+  Future<FamilyTreeModel> getFamilyTree() async {
+    final response = await requestHandler.getWrp(AppConfig.relationUrl.url);
+    if (response.code == 200 || response.code == 201) {
+      return FamilyTreeModel.fromJson(response.data ?? {});
+    }
     throw Exception(response.message);
   }
 }

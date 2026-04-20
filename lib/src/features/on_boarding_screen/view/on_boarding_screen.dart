@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../gen/assets.gen.dart';
 import '../../../app/routes/app_navigator.dart';
 import '../../../app/routes/app_route.dart';
 import '../../../global/constants/colors_resources.dart';
@@ -41,34 +42,34 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> with TickerProvider
   Map<String, List<OnBoardModel>> languageData = {
     'EN': [
       OnBoardModel(
-          img: Images.onBoard3,
+          img:  Assets.appImages.onBoard3.path,
           text: "Welcome to Family Life",
           subText: "Stay connected with your family members and never miss important moments together."
       ),
       OnBoardModel(
-          img: Images.onBoard1,
+          img: Assets.appImages.onBoard1.path,
           text: "Stay Updated",
           subText: "Get instant notifications about family events, schedules, and important announcements."
       ),
       OnBoardModel(
-          img: Images.onBoard2,
+          img: Assets.appImages.onBoard2.path,
           text: "Track Family Activities",
           subText: "Monitor your family's daily activities, expenses, and shared responsibilities easily."
       ),
     ],
     'BN': [
       OnBoardModel(
-          img: Images.onBoard3,
+          img:  Assets.appImages.onBoard3.path,
           text: "পারিবারিক জীবনে স্বাগতম",
           subText: "আপনার পরিবারের সদস্যদের সাথে সংযুক্ত থাকুন এবং গুরুত্বপূর্ণ মুহূর্তগুলি মিস করবেন না।"
       ),
       OnBoardModel(
-          img: Images.onBoard1,
+          img: Assets.appImages.onBoard1.path,
           text: "আপডেট থাকুন",
           subText: "পারিবারিক ইভেন্ট, সময়সূচী এবং গুরুত্বপূর্ণ ঘোষণা সম্পর্কে তাৎক্ষণিক বিজ্ঞপ্তি পান।"
       ),
       OnBoardModel(
-          img: Images.onBoard2,
+          img: Assets.appImages.onBoard2.path,
           text: "পারিবারিক কার্যক্রম ট্র্যাক করুন",
           subText: "আপনার পরিবারের দৈনন্দিন কার্যক্রম, খরচ এবং ভাগ করা দায়িত্বগুলি সহজেই পর্যবেক্ষণ করুন।"
       ),
@@ -146,74 +147,74 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> with TickerProvider
                       sizedBoxH(30),
 
                       // Language toggle
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10, right: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                context.read<OnBoardingBloc>().add(
-                                    LanguageChanged('EN')
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6
-                                ),
-                                decoration: BoxDecoration(
-                                  color: state.selectedLanguage == 'EN'
-                                      ? ColorRes.appColor
-                                      : Colors.grey.withValues(alpha: 0.2),
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(6),
-                                    bottomLeft: Radius.circular(6),
-                                  ),
-                                ),
-                                child: GlobalText(
-                                  str: 'EN',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: state.selectedLanguage == 'EN'
-                                      ? Colors.white
-                                      : ColorRes.appColor,
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                context.read<OnBoardingBloc>().add(
-                                    LanguageChanged('BN')
-                                );
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6
-                                ),
-                                decoration: BoxDecoration(
-                                  color: state.selectedLanguage == 'BN'
-                                      ? ColorRes.appColor
-                                      : Colors.grey.withValues(alpha: 0.2),
-                                  borderRadius: const BorderRadius.only(
-                                    topRight: Radius.circular(6),
-                                    bottomRight: Radius.circular(6),
-                                  ),
-                                ),
-                                child: GlobalText(
-                                  str: 'BN',
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: state.selectedLanguage == 'BN'
-                                      ? Colors.white
-                                      : ColorRes.appColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 10, right: 20),
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.end,
+                      //     children: [
+                      //       GestureDetector(
+                      //         onTap: () {
+                      //           context.read<OnBoardingBloc>().add(
+                      //               LanguageChanged('EN')
+                      //           );
+                      //         },
+                      //         child: Container(
+                      //           padding: const EdgeInsets.symmetric(
+                      //               horizontal: 12,
+                      //               vertical: 6
+                      //           ),
+                      //           decoration: BoxDecoration(
+                      //             color: state.selectedLanguage == 'EN'
+                      //                 ? ColorRes.appColor
+                      //                 : Colors.grey.withValues(alpha: 0.2),
+                      //             borderRadius: const BorderRadius.only(
+                      //               topLeft: Radius.circular(6),
+                      //               bottomLeft: Radius.circular(6),
+                      //             ),
+                      //           ),
+                      //           child: GlobalText(
+                      //             str: 'EN',
+                      //             fontSize: 12,
+                      //             fontWeight: FontWeight.w600,
+                      //             color: state.selectedLanguage == 'EN'
+                      //                 ? Colors.white
+                      //                 : ColorRes.appColor,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       GestureDetector(
+                      //         onTap: () {
+                      //           context.read<OnBoardingBloc>().add(
+                      //               LanguageChanged('BN')
+                      //           );
+                      //         },
+                      //         child: Container(
+                      //           padding: const EdgeInsets.symmetric(
+                      //               horizontal: 12,
+                      //               vertical: 6
+                      //           ),
+                      //           decoration: BoxDecoration(
+                      //             color: state.selectedLanguage == 'BN'
+                      //                 ? ColorRes.appColor
+                      //                 : Colors.grey.withValues(alpha: 0.2),
+                      //             borderRadius: const BorderRadius.only(
+                      //               topRight: Radius.circular(6),
+                      //               bottomRight: Radius.circular(6),
+                      //             ),
+                      //           ),
+                      //           child: GlobalText(
+                      //             str: 'BN',
+                      //             fontSize: 12,
+                      //             fontWeight: FontWeight.w600,
+                      //             color: state.selectedLanguage == 'BN'
+                      //                 ? Colors.white
+                      //                 : ColorRes.appColor,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
 
                       Expanded(
                         child: SizedBox(

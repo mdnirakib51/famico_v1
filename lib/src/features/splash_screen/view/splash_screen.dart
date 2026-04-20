@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../gen/assets.gen.dart';
 import '../../../app/routes/app_navigator.dart';
 import '../../../app/routes/app_route.dart';
 import '../../../global/constants/colors_resources.dart';
@@ -47,12 +48,12 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         }
       },
-      child: const Scaffold(
+      child: Scaffold(
         backgroundColor: ColorRes.appBackColor,
         body: ContainerSpaceBackWidget(
           child: Center(
             child: GlobalImageLoader(
-              imagePath: Images.appLogoIc,
+              imagePath: Assets.appIcons.appLogoIc.path,
               height: 150,
             ),
           ),

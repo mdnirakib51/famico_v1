@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../gen/assets.gen.dart';
 import '../../global/constants/colors_resources.dart';
 import '../../global/global_widget/global_text.dart';
+import '../constants/images.dart';
+import '../global_widget/global_image_loader.dart';
 import 'bloc/bottom_nav_bar_bloc.dart';
 import 'bloc/bottom_nav_bar_event.dart';
 import 'bloc/bottom_nav_bar_state.dart';
@@ -60,7 +63,7 @@ class _BottomNavBar extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _NavItem(
-                        icon: Icons.people_alt_rounded,
+                        icon: Assets.appIcons.makeRelationshipIc.path,
                         label: 'Make Relationship',
                         isActive: selectedIndex == 1,
                         onTap: () => context.read<BottomNavBarBloc>().add(
@@ -71,7 +74,7 @@ class _BottomNavBar extends StatelessWidget {
                     const SizedBox(width: 80),
                     Expanded(
                       child: _NavItem(
-                        icon: Icons.person_rounded,
+                        icon: Assets.appIcons.profileIc.path,
                         label: 'Profile',
                         isActive: selectedIndex == 2,
                         onTap: () => context.read<BottomNavBarBloc>().add(
@@ -98,6 +101,7 @@ class _BottomNavBar extends StatelessWidget {
                   Container(
                     width: 62,
                     height: 62,
+                    padding: EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       color: ColorRes.appColor,
                       shape: BoxShape.circle,
@@ -109,10 +113,11 @@ class _BottomNavBar extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.account_tree,
-                      color: Colors.white,
-                      size: 28,
+                    child: GlobalImageLoader(
+                      imagePath: Assets.appIcons.familyTree.path,
+                      height: 28,
+                      fit: BoxFit.fill,
+                      color: ColorRes.white,
                     ),
                   ),
                   const SizedBox(height: 13),
@@ -184,7 +189,7 @@ class _BumpedPillPainter extends CustomPainter {
 }
 
 class _NavItem extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
@@ -204,9 +209,9 @@ class _NavItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 24,
+          GlobalImageLoader(
+            imagePath: icon,
+            height: 24,
             color: isActive ? ColorRes.appColor : Colors.grey.shade400,
           ),
           const SizedBox(height: 4),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../gen/assets.gen.dart';
 import '../../../../app/routes/app_navigator.dart';
 import '../../../../app/routes/app_route.dart';
 import '../../../../global/constants/colors_resources.dart';
@@ -563,8 +564,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                           width: 0.5,
                                         ),
                                       ),
-                                      child: const GlobalImageLoader(
-                                        imagePath: Images.facebookIc,
+                                      child: GlobalImageLoader(
+                                        imagePath:  Assets.socialIc.facebookIc.path,
                                         height: 25,
                                         width: 25,
                                       ),
@@ -588,7 +589,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                         ),
                                       ),
                                       child: GlobalImageLoader(
-                                        imagePath: Images.googleIc,
+                                        imagePath:  Assets.socialIc.googleIc.path,
                                         height: 25,
                                         width: 25,
                                       ),

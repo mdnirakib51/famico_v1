@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.10.1
+  sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -39,7 +39,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^6.0.0
+  build_runner:
+  flutter_gen_runner:
 
 flutter:
   uses-material-design: true
@@ -49,3 +52,6 @@ flutter:
     - assets/app_images/
     - assets/required_src/
     - assets/social_ic/
+
+flutter_gen:
+  output: lib/gen/

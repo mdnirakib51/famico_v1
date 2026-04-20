@@ -55,7 +55,7 @@ class GlobalImageLoader extends StatelessWidget {
             color: ColorRes.grey.withAlpha(130),
             child: Center(
               child: Image.asset(
-                errorImg ?? Images.appLogoShadow,
+                errorImg ?? 'Images.appLogoShadow',
                 height: errorHeight,
                 width: errorWidth,
                 fit: BoxFit.fill,
@@ -79,7 +79,7 @@ class GlobalImageLoader extends StatelessWidget {
             color: ColorRes.black,
             child: Center(
               child: Image.asset(
-                errorImg ?? Images.appLogoShadow,
+                errorImg ?? 'Images.appLogoShadow',
                 height: errorHeight,
                 width: errorWidth,
                 fit: BoxFit.fill,
@@ -103,7 +103,7 @@ class GlobalImageLoader extends StatelessWidget {
             color: ColorRes.black,
             child: Center(
               child: Image.asset(
-                errorImg ?? Images.appLogoShadow,
+                errorImg ?? 'Images.appLogoShadow',
                 height: errorHeight,
                 width: errorWidth,
                 fit: BoxFit.fill,

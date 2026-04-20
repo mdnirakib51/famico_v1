@@ -129,7 +129,7 @@ class FamilyRepository extends ApiHelper {
   }
 
   Future<FamilyTreeModel> getFamilyTree() async {
-    final response = await requestHandler.getWrp(AppConfig.relationUrl.url);
+    final response = await requestHandler.getWrp(AppConfig.familyTreeUrl.url);
     if (response.code == 200 || response.code == 201) {
       return FamilyTreeModel.fromJson(response.data ?? {});
     }

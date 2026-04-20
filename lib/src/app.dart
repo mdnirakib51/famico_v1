@@ -7,6 +7,7 @@ import 'app/routes/app_route.dart';
 import 'features/address/bloc/address_bloc.dart';
 import 'features/auth/login/bloc/login_bloc.dart';
 import 'features/auth/registration/bloc/registration_bloc.dart';
+import 'features/family/family_tree/bloc/family_tree_bloc.dart';
 import 'features/family/make_relationship/bloc/make_relationship_bloc.dart';
 import 'features/family/member/bloc/family_member_bloc.dart';
 import 'features/on_boarding_screen/bloc/on_boarding_bloc.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => FamilyNameBloc()),
         BlocProvider(create: (_) => FamilyMemberBloc()),
         BlocProvider(create: (_) => MakeRelationshipBloc()),
+        BlocProvider(create: (_) => FamilyTreeBloc()),
         BlocProvider(create: (_) => UpdatePasswordBloc()),
       ],
       child: MaterialApp(

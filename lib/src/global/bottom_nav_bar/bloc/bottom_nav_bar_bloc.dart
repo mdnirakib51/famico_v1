@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../features/address/bloc/address_bloc.dart';
 import '../../../features/address/bloc/address_event.dart';
 import '../../../features/address/view/address_screen.dart';
+import '../../../features/family/family_tree/view/family_tree_screen.dart';
 import '../../../features/family/make_relationship/view/make_relationship_screen.dart';
 import '../../../features/user/profile/view/profile_screen.dart';
 import '../../../features/user/profile_menu_screen.dart';
@@ -22,16 +23,16 @@ class NavItemModel {
 // ─── Dashboard Bloc ───────────────────────────────────────────────────────────
 class BottomNavBarBloc extends Bloc<BottomNavBarEvent, BottomNavBarState> {
 
-  // ── Nav items ──────────────────────────────────────────────────────────────
   final List<NavItemModel> navItems = [
-    NavItemModel(title: 'Make Relationship', icon: Icons.people_alt_rounded),
-    NavItemModel(title: 'Profile', icon: Icons.person_rounded),
+    NavItemModel(title: 'Family Tree', icon: Icons.account_tree),       // index 0 — center
+    NavItemModel(title: 'Make Relationship', icon: Icons.people_alt_rounded), // index 1 — left
+    NavItemModel(title: 'Profile', icon: Icons.person_rounded),         // index 2 — right
   ];
 
-  // ── Screens ────────────────────────────────────────────────────────────────
   final List<Widget> screens = [
-    MakeRelationshipScreen(),
-    const ProfileMenuScreen(),
+    FamilyTreeScreen(),        // index 0
+    MakeRelationshipScreen(),  // index 1
+    const ProfileMenuScreen(), // index 2
   ];
 
   BottomNavBarBloc() : super(const BottomNavBarState()) {

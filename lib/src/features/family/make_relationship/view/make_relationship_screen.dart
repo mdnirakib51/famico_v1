@@ -6,23 +6,30 @@ import '../../../../global/global_widget/global_progress_hub.dart';
 import '../../../../global/global_widget/global_sized_box.dart';
 import '../../../../global/global_widget/global_text.dart';
 import '../../data/model/family_member_model.dart';
+import '../../data/model/family_tree_model.dart' show FamilyMembers;
 import '../../data/model/relation_ship_model.dart';
 import '../bloc/make_relationship_bloc.dart';
 import '../bloc/make_relationship_event.dart';
 import '../bloc/make_relationship_state.dart';
 
 class MakeRelationshipScreen extends StatefulWidget {
-  const MakeRelationshipScreen({super.key});
+  /// Family Tree থেকে + button press করলে এই member pre-fill হবে
+  final FamilyMembers? preselectedMember;
+
+  const MakeRelationshipScreen({super.key, this.preselectedMember});
 
   @override
-  State<MakeRelationshipScreen> createState() => _MakeRelationshipScreenState();
+  State<MakeRelationshipScreen> createState() =>
+      _MakeRelationshipScreenState();
 }
 
 class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
-  Members? _selectedMember;
+  Members? _selectedMember;   // first member (locked if preselected)
   Members? _selectedRelative;
   Relationships? _selectedRelation;
   Relationships? _selectedRelationship;
+
+  bool get _isFirstMemberLocked => widget.preselectedMember != null;
 
   @override
   void initState() {
@@ -32,8 +39,25 @@ class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
     );
   }
 
+  /// State load হওয়ার পর preselectedMember কে _selectedMember এ match করা
+  void _syncPreselected(List<Members> members) {
+    if (!_isFirstMemberLocked) return;
+    if (_selectedMember != null) return; // already synced
+
+    final preId = widget.preselectedMember!.id;
+    final match = members.where((m) => m.id == preId).toList();
+    if (match.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _selectedMember = match.first);
+      });
+    }
+  }
+
   void _submit(MakeRelationshipState state) {
-    if (_selectedMember == null || _selectedRelative == null || _selectedRelation == null || _selectedRelationship == null) {
+    if (_selectedMember == null ||
+        _selectedRelative == null ||
+        _selectedRelation == null ||
+        _selectedRelationship == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill all fields'),
@@ -68,6 +92,9 @@ class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<MakeRelationshipBloc, MakeRelationshipState>(
       listener: (context, state) {
+        // Sync preselected member once members list is loaded
+        _syncPreselected(state.members);
+
         if (state.mutationStatus == MakeRelationshipMutationStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -103,7 +130,8 @@ class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
           body: ProgressHUD(
             inAsyncCall:
             state.status == MakeRelationshipStatus.loading ||
-                state.mutationStatus == MakeRelationshipMutationStatus.loading,
+                state.mutationStatus ==
+                    MakeRelationshipMutationStatus.loading,
             child: state.status == MakeRelationshipStatus.loading
                 ? const SizedBox.shrink()
                 : state.status == MakeRelationshipStatus.failure
@@ -111,29 +139,31 @@ class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
               message: state.errorMessage,
               onRetry: () => context
                   .read<MakeRelationshipBloc>()
-                  .add(FetchRelationshipFormData(
-                  familyId: 2)),
+                  .add(FetchRelationshipFormData(familyId: 2)),
             )
                 : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── First Member ──
-                  _SectionLabel(label: 'First Member'),
+                  // ── First Member ──────────────────────────────
+                  const _SectionLabel(label: 'First Member'),
                   sizedBoxH(6),
-                  _MemberDropdown(
+                  _isFirstMemberLocked
+                      ? _LockedMemberCard(
+                      member: widget.preselectedMember!)
+                      : _MemberDropdown(
                     hint: 'Select first member',
                     members: state.members,
                     value: _selectedMember,
                     excludeId: _selectedRelative?.id,
-                    onChanged: (val) =>
-                        setState(() => _selectedMember = val),
+                    onChanged: (val) => setState(
+                            () => _selectedMember = val),
                   ),
                   sizedBoxH(16),
 
-                  // ── Relation Type (sibling/parent etc.) ──
-                  _SectionLabel(label: 'Relation Type'),
+                  // ── Relation Type ─────────────────────────────
+                  const _SectionLabel(label: 'Relation Type'),
                   sizedBoxH(6),
                   _RelationDropdown(
                     hint: 'e.g. Sibling, Parent, Spouse',
@@ -144,45 +174,55 @@ class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
                   ),
                   sizedBoxH(16),
 
-                  // ── Second Member (relative) ──
-                  _SectionLabel(label: 'Second Member (Relative)'),
+                  // ── Second Member ─────────────────────────────
+                  const _SectionLabel(
+                      label: 'Second Member (Relative)'),
                   sizedBoxH(6),
                   _MemberDropdown(
                     hint: 'Select second member',
                     members: state.members,
                     value: _selectedRelative,
-                    excludeId: _selectedMember?.id,
+                    excludeId: _isFirstMemberLocked
+                        ? widget.preselectedMember!.id
+                        : _selectedMember?.id,
                     onChanged: (val) =>
                         setState(() => _selectedRelative = val),
                   ),
                   sizedBoxH(16),
 
-                  // ── Relationship Nature (direct/indirect etc.) ──
-                  _SectionLabel(label: 'Relationship Nature'),
+                  // ── Relationship Nature ───────────────────────
+                  const _SectionLabel(label: 'Relationship Nature'),
                   sizedBoxH(6),
                   _RelationDropdown(
-                    hint: 'e.g. Direct, Indirect',
+                    hint: 'e.g. Blood Related, Close Relatives',
                     items: state.relationships,
                     value: _selectedRelationship,
-                    onChanged: (val) =>
-                        setState(() => _selectedRelationship = val),
+                    onChanged: (val) => setState(
+                            () => _selectedRelationship = val),
                   ),
                   sizedBoxH(32),
 
-                  // ── Preview Card ──
-                  if (_selectedMember != null &&
+                  // ── Preview Card ──────────────────────────────
+                  if ((_isFirstMemberLocked ||
+                      _selectedMember != null) &&
                       _selectedRelative != null &&
                       _selectedRelation != null)
                     _RelationPreviewCard(
-                      member: _selectedMember!.name ?? '—',
+                      member: _isFirstMemberLocked
+                          ? (widget.preselectedMember!.name ?? '—')
+                          : (_selectedMember!.name ?? '—'),
+                      memberImage: _isFirstMemberLocked
+                          ? widget.preselectedMember!.image
+                          : _selectedMember!.image,
                       relative: _selectedRelative!.name ?? '—',
+                      relativeImage: _selectedRelative!.image,
                       relation:
                       _selectedRelation!.relationship ?? '—',
                     ),
 
                   sizedBoxH(24),
 
-                  // ── Submit ──
+                  // ── Submit ────────────────────────────────────
                   GlobalButtonWidget(
                     str: 'CREATE RELATIONSHIP',
                     height: 48,
@@ -195,6 +235,53 @@ class _MakeRelationshipScreenState extends State<MakeRelationshipScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+// ── Locked Member Card (non-editable) ─────────────────────────────────────────
+class _LockedMemberCard extends StatelessWidget {
+  final FamilyMembers member;
+  const _LockedMemberCard({required this.member});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          // Avatar
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: ColorRes.appColor.withOpacity(0.12),
+            backgroundImage: (member.image?.isNotEmpty ?? false)
+                ? NetworkImage(member.image!)
+                : null,
+            child: (member.image?.isEmpty ?? true)
+                ? const Icon(Icons.person,
+                size: 18, color: ColorRes.appColor)
+                : null,
+          ),
+          sizedBoxW(10),
+          // Name
+          Expanded(
+            child: GlobalText(
+              str: member.name ?? '—',
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF333333),
+            ),
+          ),
+          // Lock icon
+          const Icon(Icons.lock_outline, size: 16, color: Colors.grey),
+        ],
+      ),
     );
   }
 }
@@ -220,7 +307,7 @@ class _MemberDropdown extends StatelessWidget {
   final String hint;
   final List<Members> members;
   final Members? value;
-  final String? excludeId; // selected এর opposite টা exclude করবে
+  final String? excludeId;
   final ValueChanged<Members?> onChanged;
 
   const _MemberDropdown({
@@ -233,9 +320,8 @@ class _MemberDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final filtered = members
-        .where((m) => excludeId == null || m.id != excludeId)
-        .toList();
+    final filtered =
+    members.where((m) => excludeId == null || m.id != excludeId).toList();
 
     return _DropdownContainer(
       child: DropdownButton<Members>(
@@ -253,7 +339,8 @@ class _MemberDropdown extends StatelessWidget {
                 radius: 14,
                 backgroundColor:
                 ColorRes.appColor.withOpacity(0.12),
-                backgroundImage: (m.image?.isNotEmpty ?? false)
+                backgroundImage:
+                (m.image?.isNotEmpty ?? false)
                     ? NetworkImage(m.image!)
                     : null,
                 child: (m.image?.isEmpty ?? true)
@@ -330,15 +417,19 @@ class _DropdownContainer extends StatelessWidget {
   }
 }
 
-// ── Relation Preview Card ─────────────────────────────────────────────────────
+// ── Relation Preview Card (updated with images) ───────────────────────────────
 class _RelationPreviewCard extends StatelessWidget {
   final String member;
+  final String? memberImage;
   final String relative;
+  final String? relativeImage;
   final String relation;
 
   const _RelationPreviewCard({
     required this.member,
+    required this.memberImage,
     required this.relative,
+    required this.relativeImage,
     required this.relation,
   });
 
@@ -354,14 +445,33 @@ class _RelationPreviewCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Member
           Expanded(
-            child: GlobalText(
-              str: member,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: ColorRes.appColor.withOpacity(0.12),
+                  backgroundImage: (memberImage?.isNotEmpty ?? false)
+                      ? NetworkImage(memberImage!)
+                      : null,
+                  child: (memberImage?.isEmpty ?? true)
+                      ? const Icon(Icons.person,
+                      size: 22, color: ColorRes.appColor)
+                      : null,
+                ),
+                sizedBoxH(6),
+                GlobalText(
+                  str: member,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
+
+          // Arrow + relation label
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Column(
@@ -377,12 +487,30 @@ class _RelationPreviewCard extends StatelessWidget {
               ],
             ),
           ),
+
+          // Relative
           Expanded(
-            child: GlobalText(
-              str: relative,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              textAlign: TextAlign.center,
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 22,
+                  backgroundColor: ColorRes.appColor.withOpacity(0.12),
+                  backgroundImage: (relativeImage?.isNotEmpty ?? false)
+                      ? NetworkImage(relativeImage!)
+                      : null,
+                  child: (relativeImage?.isEmpty ?? true)
+                      ? const Icon(Icons.person,
+                      size: 22, color: ColorRes.appColor)
+                      : null,
+                ),
+                sizedBoxH(6),
+                GlobalText(
+                  str: relative,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
         ],

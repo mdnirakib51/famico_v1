@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../global/constants/colors_resources.dart';
@@ -6,7 +5,6 @@ import '../../global/global_widget/global_text.dart';
 import 'bloc/bottom_nav_bar_bloc.dart';
 import 'bloc/bottom_nav_bar_event.dart';
 import 'bloc/bottom_nav_bar_state.dart';
-import 'dart:math';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -18,26 +16,13 @@ class BottomNavBar extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: const Color(0xFFE8F5E0), // হালকা সবুজ background
-          body: Stack(
-            children: [
-              Positioned.fill(
-                bottom: 80,
-                child: IndexedStack(
-                  index: state.selectedIndex,
-                  children: bloc.screens,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: _BottomNavBar(
-                  selectedIndex: state.selectedIndex,
-                  bloc: bloc,
-                ),
-              ),
-            ],
+          bottomSheet: _BottomNavBar(
+            selectedIndex: state.selectedIndex,
+            bloc: bloc,
+          ),
+          body: IndexedStack(
+            index: state.selectedIndex,
+            children: bloc.screens,
           ),
         );
       },
@@ -49,17 +34,15 @@ class _BottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final BottomNavBarBloc bloc;
 
-  const _BottomNavBar({
-    required this.selectedIndex,
-    required this.bloc,
-  });
+  const _BottomNavBar({required this.selectedIndex, required this.bloc});
 
   @override
   Widget build(BuildContext context) {
     final bottomPad = MediaQuery.of(context).padding.bottom;
 
-    return SizedBox(
+    return Container(
       height: 90 + bottomPad,
+      color: ColorRes.appBackColor,
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.bottomCenter,
@@ -80,9 +63,9 @@ class _BottomNavBar extends StatelessWidget {
                         icon: Icons.people_alt_rounded,
                         label: 'Make Relationship',
                         isActive: selectedIndex == 1,
-                        onTap: () => context
-                            .read<BottomNavBarBloc>()
-                            .add(BottomNavBarTabChanged(1)),
+                        onTap: () => context.read<BottomNavBarBloc>().add(
+                          BottomNavBarTabChanged(1),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 80),
@@ -91,9 +74,9 @@ class _BottomNavBar extends StatelessWidget {
                         icon: Icons.person_rounded,
                         label: 'Profile',
                         isActive: selectedIndex == 2,
-                        onTap: () => context
-                            .read<BottomNavBarBloc>()
-                            .add(BottomNavBarTabChanged(2)),
+                        onTap: () => context.read<BottomNavBarBloc>().add(
+                          BottomNavBarTabChanged(2),
+                        ),
                       ),
                     ),
                   ],
@@ -104,11 +87,11 @@ class _BottomNavBar extends StatelessWidget {
 
           // ── Floating FAB ──────────────────────────────────────────
           Positioned(
-            bottom: bottomPad + 28,
+            bottom: bottomPad + 25,
             child: GestureDetector(
-              onTap: () => context
-                  .read<BottomNavBarBloc>()
-                  .add(BottomNavBarTabChanged(0)),
+              onTap: () => context.read<BottomNavBarBloc>().add(
+                BottomNavBarTabChanged(0),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -132,10 +115,10 @@ class _BottomNavBar extends StatelessWidget {
                       size: 28,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 13),
                   GlobalText(
                     str: 'Family Tree',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: selectedIndex == 0
                         ? FontWeight.w700
                         : FontWeight.w400,
@@ -169,56 +152,31 @@ class _BumpedPillPainter extends CustomPainter {
       ..color = Colors.black.withValues(alpha: 0.08)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
 
-    final double r = size.height / 2; // pill radius = 34
     final double cx = size.width / 2;
 
-    final path = Path();
+    final hostRect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // Start bottom-left, go counter-clockwise for pill shape
-    // Left pill end (semi-circle)
-    path.addArc(
-      Rect.fromLTWH(0, 0, size.height, size.height),
-      pi / 2,
-      pi,
+    final pillPath = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(hostRect, Radius.circular(size.height / 2)),
+      );
+
+    // The floating action button's logical center is slightly above the bar.
+    // Circle wrapper radius is ~31. We add a few pixels for the gap (radius 36).
+    final guestRect = Rect.fromCircle(center: Offset(cx, -12), radius: 36);
+
+    final notchShape = const CircularNotchedRectangle();
+    final notchPath = notchShape.getOuterPath(hostRect, guestRect);
+
+    // Combine paths to get the pill shape with a perfectly calculated notch cutout
+    final finalPath = Path.combine(
+      PathOperation.intersect,
+      pillPath,
+      notchPath,
     );
 
-    final double notchDepth = 46.0;
-    final double notchStartLeft = cx - 50.0;
-    final double notchEndRight = cx + 50.0;
-
-    // Top-left to bump start
-    path.lineTo(notchStartLeft, 0);
-
-    // Bump curve going DOWN (notch)
-    path.cubicTo(
-      notchStartLeft + 12, 0,
-      cx - 32, notchDepth,
-      cx, notchDepth,
-    );
-    path.cubicTo(
-      cx + 32, notchDepth,
-      notchEndRight - 12, 0,
-      notchEndRight, 0,
-    );
-
-    // Top-right to right pill end
-    path.lineTo(size.width - r, 0);
-
-    // Right pill end (semi-circle)
-    path.arcTo(
-      Rect.fromLTWH(size.width - size.height, 0, size.height, size.height),
-      -pi / 2,
-      pi,
-      false,
-    );
-
-    // Bottom line back to start
-    path.lineTo(r, size.height);
-
-    path.close();
-
-    canvas.drawPath(path, shadowPaint);
-    canvas.drawPath(path, paint);
+    canvas.drawPath(finalPath, shadowPaint);
+    canvas.drawPath(finalPath, paint);
   }
 
   @override
